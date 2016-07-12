@@ -94,7 +94,7 @@ public class UserSideClient {
 	}
 
 	/**
-	 * Ищет ID ТМЦ по наименованию
+	 * Looking for item inventory category identifier by item name
 	 *
 	 * @param name Item name to find
 	 * @return id of US category or null if not found
@@ -115,9 +115,9 @@ public class UserSideClient {
 	}
 
 	/**
-	 * Ищет ID ТМЦ по инвентарному номеру
+	 * Looking for item inventory id by asset number
 	 *
-	 * @param invNumber Инвентарный номер
+	 * @param invNumber asset number
 	 * @return id of inventory item or null if not found
 	 * @throws IOException
 	 * @throws EncoderException
