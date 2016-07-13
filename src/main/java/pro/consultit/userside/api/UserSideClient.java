@@ -61,13 +61,12 @@ public class UserSideClient {
 		});
 	}
 
-	public HouseListItem getHouse(int houseId) throws IOException {
+	public IndexIncapsulatedResponse<Integer, HouseListItem> getHouse(int houseId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=address&action=get_house&id=" + houseId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IndexIncapsulatedResponse<Integer, HouseListItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
 		});
-		return result.getData() != null ? result.getData().get(houseId) : null;
 	}
 
 	public IndexIncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
