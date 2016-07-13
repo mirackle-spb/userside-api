@@ -53,21 +53,21 @@ public class UserSideClient {
 		});
 	}
 
-	public Map<Integer, HouseListItem> getHouseList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_house_list");
+	public IndexIncapsulatedResponse<Integer, HouseListItem> getHouseList() throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=address&action=get_house");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, HouseListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
 		});
 	}
 
 	public HouseListItem getHouse(int houseId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_house_list&id=" + houseId);
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=address&action=get_house&id=" + houseId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		HashMap<Integer, HouseListItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, HouseListItem>>() {
+		IndexIncapsulatedResponse<Integer, HouseListItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
 		});
-		return result.get(houseId);
+		return result.getData() != null ? result.getData().get(houseId) : null;
 	}
 
 	public IndexIncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
