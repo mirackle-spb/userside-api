@@ -16,7 +16,7 @@ public class HouseListItem {
 	private Integer number;
 	private String block;
 	@JsonProperty("additional_data")
-	private Map<Integer, AdditionalParam> params = new HashMap();
+	private Map<Integer, ParameterValue> params = new HashMap();
 	@JsonProperty("floor")
 	private int floorCount;
 	@JsonProperty("entrance")
@@ -146,7 +146,7 @@ public class HouseListItem {
 	}
 
 
-	public Map<Integer, AdditionalParam> getParams() {
+	public Map<Integer, ParameterValue> getParams() {
 		return params;
 	}
 

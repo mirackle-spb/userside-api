@@ -33,7 +33,7 @@ public class DeviceListItem {
 	@JsonProperty("activity_time")
 	private Date lastActivityTime;
 	@JsonProperty("additional_data")
-	private Map<Integer, AdditionalParam> additionalOptionMap = new HashMap<>();
+	private Map<Integer, String> additionalOptionMap = new HashMap<>();
 
 	protected DeviceListItem() {
 	}
@@ -146,11 +146,11 @@ public class DeviceListItem {
 		return this;
 	}
 
-	public Map<Integer, AdditionalParam> getAdditionalOptionMap() {
+	public Map<Integer, String> getAdditionalOptionMap() {
 		return additionalOptionMap;
 	}
 
-	public DeviceListItem setAdditionalOptionMap(Map<Integer, AdditionalParam> additionalOptionMap) {
+	public DeviceListItem setAdditionalOptionMap(Map<Integer, String> additionalOptionMap) {
 		this.additionalOptionMap = additionalOptionMap;
 		return this;
 	}

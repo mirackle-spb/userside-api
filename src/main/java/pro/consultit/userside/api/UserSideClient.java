@@ -29,67 +29,76 @@ public class UserSideClient {
 		this.key = key;
 	}
 
-	public Map<String, CityListItem> getCityList() throws IOException {
+	public Map<Integer, CityListItem> getCityList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_city_list");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, CityListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, CityListItem>>() {
 		});
 	}
 
-	public Map<String, DistrictListItem> getDistrictList() throws IOException {
+	public Map<Integer, DistrictListItem> getDistrictList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_city_district_list");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, DistrictListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, DistrictListItem>>() {
 		});
 	}
 
-	public Map<String, StreetListItem> getStreetList() throws IOException {
+	public Map<Integer, StreetListItem> getStreetList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_street_list");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, StreetListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, StreetListItem>>() {
 		});
 	}
 
-	public Map<String, HouseListItem> getHouseList() throws IOException {
+	public Map<Integer, HouseListItem> getHouseList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_house_list");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, HouseListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, HouseListItem>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<AdditionalParam> getHouseAdditionalParameterList() throws IOException {
+	public HouseListItem getHouse(int houseId) throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_house_list&id=" + houseId);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		HashMap<Integer, HouseListItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, HouseListItem>>() {
+		});
+		return result.get(houseId);
+	}
+
+	public IndexIncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=house");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<AdditionalParam>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, AdditionalParam>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<OperatorResponse> getOperator(int operatorId) throws IOException {
+	public IndexIncapsulatedResponse<Integer, OperatorResponse> getOperator(int operatorId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=operator&action=get&id=" + operatorId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<OperatorResponse>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, OperatorResponse>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<DeviceListItem> getDevice(int deviceId) throws IOException {
+	public IndexIncapsulatedResponse<Integer, DeviceListItem> getDevice(int deviceId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_data&object_type=switch&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<DeviceListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, DeviceListItem>>() {
 		});
 	}
 
-	public Map<Integer, CommutationListItem> getCommutationList(int deviceId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&object_id=" + deviceId);
+	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(int deviceId) throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&is_finish_data=1&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, CityListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, CommutationListItem[]>>>() {
 		});
 	}
 
@@ -107,8 +116,8 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("Id") != null) {
-			return Integer.parseInt(result.get("Id"));
+		if (result.get("id") != null) {
+			return Integer.parseInt(result.get("id"));
 		} else {
 			return null;
 		}
@@ -117,22 +126,61 @@ public class UserSideClient {
 	/**
 	 * Looking for item inventory id by asset number
 	 *
-	 * @param invNumber asset number
+	 * @param assetNumber asset number
 	 * @return id of inventory item or null if not found
 	 * @throws IOException
 	 * @throws EncoderException
 	 */
 
-	public Integer getIdByInvNumber(Integer invNumber) throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "cat=inventory&action=get_inventory_id&data_typer=inventory_number&data_value=" + urlCodec.encode(invNumber));
+	public Integer getInventoryId(String assetNumber) throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_id&data_typer=inventory_number&data_value=" + urlCodec.encode(assetNumber));
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("Id") != null) {
-			return Integer.parseInt(result.get("Id"));
+		if (result.get("id") != null) {
+			return Integer.parseInt(result.get("id"));
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Looking for device id by asset number
+	 *
+	 * @param assetNumber asset number
+	 * @return id of devoce item or null if not found
+	 * @throws IOException
+	 * @throws EncoderException
+	 */
+
+	public Integer getDeviceId(String assetNumber) throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_device_id&object_type=switch&data_typer=inventory_number&data_value=" + urlCodec.encode(assetNumber));
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
+		});
+		if (result.get("id") != null) {
+			return Integer.parseInt(result.get("id"));
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Looking for item inventory id by asset number
+	 *
+	 * @param inventoryId inventoryId
+	 * @return id of inventory item or null if not found
+	 * @throws IOException
+	 * @throws EncoderException
+	 */
+
+	public IncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory&id=" + inventoryId);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<InventoryListItem>>() {
+		});
 	}
 }

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndexIncapsulatedResponse<T> {
+public class IndexIncapsulatedResponse<I, T> {
 	@JsonProperty("Result")
 	private String result;
 	@JsonProperty("Error")
 	private String error;
 
-	private Map<Integer, T> data = new HashMap();
+	private Map<I, T> data = new HashMap();
 
 	protected IndexIncapsulatedResponse() {
 	}
@@ -34,11 +34,11 @@ public class IndexIncapsulatedResponse<T> {
 		return this;
 	}
 
-	public Map<Integer, T> getData() {
+	public Map<I, T> getData() {
 		return data;
 	}
 
-	public void setData(Map<Integer, T> data) {
+	public void setData(Map<I, T> data) {
 		this.data = data;
 	}
 }
