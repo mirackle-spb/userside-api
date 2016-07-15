@@ -77,6 +77,13 @@ public class UserSideClient {
 		});
 	}
 
+	public IndexIncapsulatedResponse<Integer, AdditionalParam> getDeviceAdditionalParameterList() throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=switch");
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, AdditionalParam>>() {
+		});
+	}
 	public IndexIncapsulatedResponse<Integer, OperatorResponse> getOperator(int operatorId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=operator&action=get&id=" + operatorId);
 		HttpResponse response = httpclient.execute(httpget);
@@ -175,7 +182,7 @@ public class UserSideClient {
 	 * @throws EncoderException
 	 */
 
-	public IncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException, EncoderException {
+	public IncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory&id=" + inventoryId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();

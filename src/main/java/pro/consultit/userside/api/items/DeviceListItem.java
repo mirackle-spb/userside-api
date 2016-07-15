@@ -15,7 +15,8 @@ public class DeviceListItem {
 	private int houseId;
 	@JsonProperty("interfaces")
 	private int interfaceCount;
-
+	@JsonProperty("inventory_id")
+	private int inventoryId;
 	private String name;
 	@JsonProperty("uplink_iface")
 	private String uplinkInterfaces;
@@ -143,6 +144,15 @@ public class DeviceListItem {
 
 	public DeviceListItem setLastActivityTime(Date lastActivityTime) {
 		this.lastActivityTime = lastActivityTime;
+		return this;
+	}
+
+	public int getInventoryId() {
+		return inventoryId;
+	}
+
+	public DeviceListItem setInventoryId(int inventoryId) {
+		this.inventoryId = inventoryId;
 		return this;
 	}
 
