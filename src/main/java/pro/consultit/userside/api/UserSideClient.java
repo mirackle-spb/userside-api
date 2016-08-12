@@ -9,10 +9,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import pro.consultit.userside.api.items.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserSideClient {
@@ -84,6 +86,7 @@ public class UserSideClient {
 		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, AdditionalParam>>() {
 		});
 	}
+
 	public IndexIncapsulatedResponse<Integer, OperatorResponse> getOperator(int operatorId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=operator&action=get&id=" + operatorId);
 		HttpResponse response = httpclient.execute(httpget);
@@ -188,5 +191,41 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		return objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<InventoryListItem>>() {
 		});
+	}
+
+	public List<Integer> addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException {
+		HttpGet httpget = new HttpGet(url);
+		BasicHttpParams params = new BasicHttpParams();
+		params.setParameter("key", key);
+		params.setParameter("cat", "inventory");
+		params.setParameter("action", "add_inventory");
+		params.setParameter("inventory_catalog_id", catalogId);
+		params.setParameter("trader_id", traderId);
+		params.setParameter("amount", amount);
+		params.setParameter("cost", cost);
+		params.setParameter("storage_id", storageId);
+		params.setParameter("sn", serial);
+		params.setParameter("inventory_number", assetNumber);
+		httpget.setParams(params);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		return objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
+		});
+	}
+
+	public Integer inventoryTransfer(int inventoryId, String dstAccount) throws IOException {
+		HttpGet httpget = new HttpGet(url);
+		BasicHttpParams params = new BasicHttpParams();
+		params.setParameter("key", key);
+		params.setParameter("cat", "inventory");
+		params.setParameter("action", "transfer_inventory");
+		params.setParameter("inventory_id", inventoryId);
+		params.setParameter("dst_account", dstAccount);
+		httpget.setParams(params);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		List<Integer> result = objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
+		});
+		return result.size() > 0 ? result.get(0) : null;
 	}
 }
