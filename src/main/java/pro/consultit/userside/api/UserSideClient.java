@@ -137,10 +137,10 @@ public class UserSideClient {
 		});
 	}
 
-	public ActionResponse<Integer> addSystemMark(String name, String[] type_array) throws IOException {
-		String getString = url + "?key=" + key + "&cat=setting&action=mark_add&name=" + name;
+	public ActionResponse<Integer> addSystemMark(String name, String[] type_array) throws IOException, EncoderException {
+		String getString = url + "?key=" + key + "&cat=setting&action=mark_add&name=" + urlCodec.encode(name);
 		for (String type : type_array) {
-			getString += "&type_array[]=" + type;
+			getString += "&type_array[]=" + urlCodec.encode(type);
 		}
 		HttpGet httpget = new HttpGet(getString);
 		HttpResponse response = httpclient.execute(httpget);
@@ -204,6 +204,28 @@ public class UserSideClient {
 
 	public Integer getDeviceId(String assetNumber) throws IOException, EncoderException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_device_id&object_type=switch&data_typer=inventory_number&data_value=" + urlCodec.encode(assetNumber));
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
+		});
+		if (result.get("id") != null) {
+			return Integer.parseInt(result.get("id"));
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Looking for device id by device ip address
+	 *
+	 * @param ipAddress ip address
+	 * @return id of devoce item or null if not found
+	 * @throws IOException
+	 * @throws EncoderException
+	 */
+
+	public Integer getDeviceIdByIpAddress(String ipAddress) throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_device_id&object_type=switch&data_typer=ip&data_value=" + urlCodec.encode(ipAddress));
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
