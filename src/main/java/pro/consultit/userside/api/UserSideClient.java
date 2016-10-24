@@ -103,6 +103,24 @@ public class UserSideClient {
 		});
 	}
 
+	public boolean appendDeviceMark(int deviceId, int markId) throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=add_mark&object_type=switch&object_id=" + deviceId + "&mark_id=" + markId);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		ActionResponse<Integer> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
+		});
+		return usResponse.getResult() != null && usResponse.getResult().equals("OK");
+	}
+
+	public boolean deleteDeviceMark(int deviceId, int markId) throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=delete_mark&object_type=switch&object_id=" + deviceId + "&mark_id=" + markId);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		ActionResponse<Integer> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
+		});
+		return usResponse.getResult() != null && usResponse.getResult().equals("OK");
+	}
+
 	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(int deviceId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&is_finish_data=1&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
