@@ -111,6 +111,27 @@ public class UserSideClient {
 		});
 	}
 
+	public IndexIncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=setting&action=mark_show");
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, SystemMarkItem>>() {
+		});
+	}
+
+	public ActionResponse<Integer> addSystemMark(String name, String[] type_array) throws IOException {
+		String getString = url + "?key=" + key + "&cat=setting&action=mark_add&name=" + name;
+		for (String type : type_array) {
+			getString += "&type_array[]=" + type;
+		}
+		HttpGet httpget = new HttpGet(getString);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		return objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
+		});
+	}
+
+
 	/**
 	 * Looking for item inventory category identifier by item name
 	 *
