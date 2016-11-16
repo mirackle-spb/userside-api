@@ -125,8 +125,17 @@ public class UserSideClient {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&is_finish_data=1&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, CommutationListItem[]>>>() {
+		IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
 		});
+		Map<Integer, CommutationListItem[]> resultMap = new HashMap<>();
+		if (usResponse.getData() != null) {
+			for (Integer port : usResponse.getData().keySet()) {
+				if (usResponse.getData().get(port).containsKey("finish")) {
+					resultMap.put(port, new CommutationListItem[]{usResponse.getData().get(port).get("finish")});
+				}
+			}
+		}
+		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
 	}
 
 	public IndexIncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {

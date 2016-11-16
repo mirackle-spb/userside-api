@@ -14,6 +14,12 @@ public class IncapsulatedResponse<T> {
 	protected IncapsulatedResponse() {
 	}
 
+	public IncapsulatedResponse(String result, String error, T data) {
+		this.result = result;
+		this.error = error;
+		this.data = data;
+	}
+
 	public T getData() {
 		return data;
 	}
