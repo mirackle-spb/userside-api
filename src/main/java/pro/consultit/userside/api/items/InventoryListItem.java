@@ -30,7 +30,7 @@ public class InventoryListItem {
 	@JsonProperty("inventory_number")
 	private String inventoryNumber;
 
-	private long barcode;
+	private String barcode;
 
 	@JsonProperty("location_type_id")
 	private int locationType;
@@ -132,12 +132,13 @@ public class InventoryListItem {
 		this.inventoryNumber = inventoryNumber;
 	}
 
-	public long getBarcode() {
+	public String getBarcode() {
 		return barcode;
 	}
 
-	public void setBarcode(long barcode) {
+	public InventoryListItem setBarcode(String barcode) {
 		this.barcode = barcode;
+		return this;
 	}
 
 	public int getLocationType() {
