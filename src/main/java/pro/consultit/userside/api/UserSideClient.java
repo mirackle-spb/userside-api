@@ -298,4 +298,24 @@ public class UserSideClient {
 		});
 		return result.size() > 0 ? result.get(0) : null;
 	}
+
+	public Integer getCustomerByBillingId(int billingId) throws IOException {
+		HttpGet httpget = new HttpGet(url);
+		BasicHttpParams params = new BasicHttpParams();
+		params.setParameter("key", key);
+		params.setParameter("cat", "customer");
+		params.setParameter("subcat", "get_abon_id");
+		params.setParameter("data_typer", "billing_uid");
+		params.setParameter("data_value", billingId);
+		httpget.setParams(params);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		GetCustomerIdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<GetCustomerIdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+			return result.getCustomerId();
+		} else {
+			return null;
+		}
+	}
 }
