@@ -2,6 +2,7 @@ package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
@@ -13,6 +14,8 @@ import org.apache.http.params.BasicHttpParams;
 import pro.consultit.userside.api.items.*;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -310,7 +313,32 @@ public class UserSideClient {
 		httpget.setParams(params);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		GetCustomerIdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<GetCustomerIdResponse>() {
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+			return result.getCustomerId();
+		} else {
+			return null;
+		}
+	}
+
+	public Integer addTask(int taskType, @NotNull Date dateToDo, int customerId, String description) throws IOException {
+		HttpGet httpget = new HttpGet(url);
+		BasicHttpParams params = new BasicHttpParams();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		params.setParameter("key", key);
+		params.setParameter("cat", "task");
+		params.setParameter("subcat", "add");
+		params.setParameter("work_typer", taskType);
+		params.setParameter("work_datedo", dateFormat.format(dateToDo));
+		params.setParameter("usercode", customerId);
+		if (description != null) {
+			params.setParameter("opis", description);
+		}
+		httpget.setParams(params);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
 		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
 			return result.getCustomerId();

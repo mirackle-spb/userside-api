@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetCustomerIdResponse {
+public class IdResponse {
 	@JsonProperty("Result")
 	private String result;
 	@JsonProperty("Id")
 	private Integer customerId;
 
-	protected GetCustomerIdResponse() {
+	protected IdResponse() {
 	}
 
-	public GetCustomerIdResponse(String result, Integer customerId) {
+	public IdResponse(String result, Integer customerId) {
 		this.result = result;
 		this.customerId = customerId;
 	}
