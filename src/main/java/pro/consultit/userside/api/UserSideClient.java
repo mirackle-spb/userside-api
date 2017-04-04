@@ -6,19 +6,18 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
+import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserSideClient {
 
@@ -267,19 +266,20 @@ public class UserSideClient {
 	}
 
 	public List<Integer> addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException {
-		HttpGet httpget = new HttpGet(url);
-		BasicHttpParams params = new BasicHttpParams();
-		params.setParameter("key", key);
-		params.setParameter("cat", "inventory");
-		params.setParameter("action", "add_inventory");
-		params.setParameter("inventory_catalog_id", catalogId);
-		params.setParameter("trader_id", traderId);
-		params.setParameter("amount", amount);
-		params.setParameter("cost", cost);
-		params.setParameter("storage_id", storageId);
-		params.setParameter("sn", serial);
-		params.setParameter("inventory_number", assetNumber);
-		httpget.setParams(params);
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "add_inventory"));
+		params.add(new BasicNameValuePair("inventory_catalog_id", String.valueOf(catalogId)));
+		params.add(new BasicNameValuePair("trader_id", String.valueOf(traderId)));
+		params.add(new BasicNameValuePair("amount", String.valueOf(amount)));
+		params.add(new BasicNameValuePair("cost", String.valueOf(cost)));
+		params.add(new BasicNameValuePair("storage_id", String.valueOf(storageId)));
+		params.add(new BasicNameValuePair("sn", serial));
+		params.add(new BasicNameValuePair("inventory_number", assetNumber));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		return objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
@@ -287,14 +287,18 @@ public class UserSideClient {
 	}
 
 	public Integer inventoryTransfer(int inventoryId, String dstAccount) throws IOException {
-		HttpGet httpget = new HttpGet(url);
-		BasicHttpParams params = new BasicHttpParams();
-		params.setParameter("key", key);
-		params.setParameter("cat", "inventory");
-		params.setParameter("action", "transfer_inventory");
-		params.setParameter("inventory_id", inventoryId);
-		params.setParameter("dst_account", dstAccount);
-		httpget.setParams(params);
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "transfer_inventory"));
+		params.add(new BasicNameValuePair("inventory_id", String.valueOf(inventoryId)));
+		params.add(new BasicNameValuePair("dst_account", String.valueOf(dstAccount)));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		List<Integer> result = objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
@@ -303,14 +307,17 @@ public class UserSideClient {
 	}
 
 	public Integer getCustomerByBillingId(int billingId) throws IOException {
-		HttpGet httpget = new HttpGet(url);
-		BasicHttpParams params = new BasicHttpParams();
-		params.setParameter("key", key);
-		params.setParameter("cat", "customer");
-		params.setParameter("subcat", "get_abon_id");
-		params.setParameter("data_typer", "billing_uid");
-		params.setParameter("data_value", billingId);
-		httpget.setParams(params);
+
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "customer"));
+		params.add(new BasicNameValuePair("subcat", "get_abon_id"));
+		params.add(new BasicNameValuePair("data_typer", "billing_uid"));
+		params.add(new BasicNameValuePair("data_value", String.valueOf(billingId)));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
@@ -323,19 +330,24 @@ public class UserSideClient {
 	}
 
 	public Integer addTask(int taskType, @NotNull Date dateToDo, int customerId, String description) throws IOException {
-		HttpGet httpget = new HttpGet(url);
-		BasicHttpParams params = new BasicHttpParams();
+
+		List<NameValuePair> params = new ArrayList<>();
+
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		params.setParameter("key", key);
-		params.setParameter("cat", "task");
-		params.setParameter("subcat", "add");
-		params.setParameter("work_typer", taskType);
-		params.setParameter("work_datedo", dateFormat.format(dateToDo));
-		params.setParameter("usercode", customerId);
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("subcat", "add"));
+		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
+		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
+		params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
 		if (description != null) {
-			params.setParameter("opis", description);
+			params.add(new BasicNameValuePair("opis", description));
 		}
-		httpget.setParams(params);
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
