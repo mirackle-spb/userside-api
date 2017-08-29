@@ -8,7 +8,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,6 +18,7 @@ import pro.consultit.userside.api.items.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -345,10 +348,38 @@ public class UserSideClient {
 			params.add(new BasicNameValuePair("opis", description));
 		}
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
 
-		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+			return result.getCustomerId();
+		} else {
+			return null;
+		}
+	}
+
+	public Integer addTaskComment(int taskId, String description) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("subcat", "comment_add"));
+		params.add(new BasicNameValuePair("id", String.valueOf(taskId)));
+		if (description != null) {
+			params.add(new BasicNameValuePair("comment", description));
+		}
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
+
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
