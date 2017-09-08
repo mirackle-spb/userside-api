@@ -178,8 +178,8 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("id") != null) {
-			return Integer.parseInt(result.get("id"));
+		if (result.get("Id") != null) {
+			return Integer.parseInt(result.get("Id"));
 		} else {
 			return null;
 		}
