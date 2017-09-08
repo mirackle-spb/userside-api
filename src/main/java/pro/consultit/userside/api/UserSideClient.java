@@ -178,7 +178,7 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("Id") != null) {
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
 			return Integer.parseInt(result.get("Id"));
 		} else {
 			return null;
@@ -200,7 +200,7 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("id") != null) {
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
 			return Integer.parseInt(result.get("id"));
 		} else {
 			return null;
@@ -222,7 +222,7 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("id") != null) {
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
 			return Integer.parseInt(result.get("id"));
 		} else {
 			return null;
@@ -244,7 +244,7 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
 		});
-		if (result.get("id") != null) {
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
 			return Integer.parseInt(result.get("id"));
 		} else {
 			return null;
