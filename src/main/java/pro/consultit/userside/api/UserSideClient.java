@@ -268,7 +268,7 @@ public class UserSideClient {
 		});
 	}
 
-	public List<Integer> addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException {
+	public Integer addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "inventory"));
@@ -285,8 +285,13 @@ public class UserSideClient {
 		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
+		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<Map<String, String>>() {
 		});
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
+			return Integer.parseInt(result.get("Id"));
+		} else {
+			return null;
+		}
 	}
 
 	public Integer inventoryTransfer(int inventoryId, String dstAccount) throws IOException {
@@ -304,9 +309,13 @@ public class UserSideClient {
 
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		List<Integer> result = objectMapper.readValue(entity.getContent(), new TypeReference<List<Integer>>() {
+		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<Map<String, String>>() {
 		});
-		return result.size() > 0 ? result.get(0) : null;
+		if (result.get("Result") != null && result.get("Result").equals("OK")) {
+			return Integer.parseInt(result.get("Id"));
+		} else {
+			return null;
+		}
 	}
 
 	public Integer getCustomerByBillingId(int billingId) throws IOException {
