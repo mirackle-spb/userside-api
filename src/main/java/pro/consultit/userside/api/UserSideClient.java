@@ -17,6 +17,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.items.*;
+import pro.consultit.userside.api.items.customer.CustomerData;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
