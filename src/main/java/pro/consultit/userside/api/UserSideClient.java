@@ -139,8 +139,49 @@ public class UserSideClient {
 		return usResponse.getResult() != null && usResponse.getResult().equals("OK");
 	}
 
+	@Deprecated
 	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(int deviceId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&is_finish_data=1&object_id=" + deviceId);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
+		});
+		Map<Integer, CommutationListItem[]> resultMap = new HashMap<>();
+		if (usResponse.getData() != null) {
+			for (Integer port : usResponse.getData().keySet()) {
+				if (usResponse.getData().get(port).containsKey("finish")) {
+					resultMap.put(port, new CommutationListItem[]{usResponse.getData().get(port).get("finish")});
+				}
+			}
+		}
+		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
+	}
+
+	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(CommutaionType type, int objectId) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "commutation"));
+		params.add(new BasicNameValuePair("action", "get_data"));
+		switch (type) {
+			case CROSS:
+				params.add(new BasicNameValuePair("object_type", "cross"));
+				break;
+			case FIBER:
+				params.add(new BasicNameValuePair("object_type", "fiber"));
+				break;
+			case SWITCH:
+				params.add(new BasicNameValuePair("object_type", "switch"));
+				break;
+			case CUSTOMER:
+				params.add(new BasicNameValuePair("object_type", "customer"));
+				break;
+		}
+		params.add(new BasicNameValuePair("is_finish_data", "1"));
+		params.add(new BasicNameValuePair("object_id", String.valueOf(objectId)));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
@@ -472,5 +513,9 @@ public class UserSideClient {
 		HttpParams httpParams = httpClient.getParams();
 		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);
 		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, timeout * 1000);
+	}
+
+	public enum CommutaionType {
+		CUSTOMER, SWITCH, CROSS, FIBER
 	}
 }

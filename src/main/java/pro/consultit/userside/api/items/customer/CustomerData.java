@@ -2,6 +2,7 @@ package pro.consultit.userside.api.items.customer;
 
 import com.fasterxml.jackson.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +18,21 @@ public class CustomerData {
 	@JsonProperty("flag_corporate")
 	private int flagCorporate;
 	@JsonProperty("balance")
-	private String balance;
+	private Double balance;
 	@JsonProperty("state_id")
 	private int stateId;
 	@JsonProperty("date_create")
-	private String dateCreate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date dateCreate;
 	@JsonProperty("date_connect")
-	private String dateConnect;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date dateConnect;
 	@JsonProperty("date_activity")
-	private String dateActivity;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date dateActivity;
 	@JsonProperty("date_activity_inet")
-	private Object dateActivityInet;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private Date dateActivityInet;
 	@JsonProperty("is_disable")
 	private int isDisable;
 	@JsonProperty("address")
@@ -86,12 +91,12 @@ public class CustomerData {
 	}
 
 	@JsonProperty("balance")
-	public String getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
 
 	@JsonProperty("balance")
-	public void setBalance(String balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
 
@@ -106,42 +111,42 @@ public class CustomerData {
 	}
 
 	@JsonProperty("date_create")
-	public String getDateCreate() {
+	public Date getDateCreate() {
 		return dateCreate;
 	}
 
 	@JsonProperty("date_create")
-	public void setDateCreate(String dateCreate) {
+	public void setDateCreate(Date dateCreate) {
 		this.dateCreate = dateCreate;
 	}
 
 	@JsonProperty("date_connect")
-	public String getDateConnect() {
+	public Date getDateConnect() {
 		return dateConnect;
 	}
 
 	@JsonProperty("date_connect")
-	public void setDateConnect(String dateConnect) {
+	public void setDateConnect(Date dateConnect) {
 		this.dateConnect = dateConnect;
 	}
 
 	@JsonProperty("date_activity")
-	public String getDateActivity() {
+	public Date getDateActivity() {
 		return dateActivity;
 	}
 
 	@JsonProperty("date_activity")
-	public void setDateActivity(String dateActivity) {
+	public void setDateActivity(Date dateActivity) {
 		this.dateActivity = dateActivity;
 	}
 
 	@JsonProperty("date_activity_inet")
-	public Object getDateActivityInet() {
+	public Date getDateActivityInet() {
 		return dateActivityInet;
 	}
 
 	@JsonProperty("date_activity_inet")
-	public void setDateActivityInet(Object dateActivityInet) {
+	public void setDateActivityInet(Date dateActivityInet) {
 		this.dateActivityInet = dateActivityInet;
 	}
 
