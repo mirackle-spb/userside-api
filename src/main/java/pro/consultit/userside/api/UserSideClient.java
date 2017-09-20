@@ -14,6 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.items.*;
 
 import javax.validation.constraints.NotNull;
@@ -29,11 +31,21 @@ public class UserSideClient {
 	private ObjectMapper objectMapper;
 	private HttpClient httpclient = new DefaultHttpClient();
 	private URLCodec urlCodec = new URLCodec();
+	private int timeout = 5;
 
 	public UserSideClient(ObjectMapper objectMapper, String url, String key) {
 		this.objectMapper = objectMapper;
 		this.url = url;
 		this.key = key;
+		setHttpClientTimeout(httpclient);
+	}
+
+	public UserSideClient(ObjectMapper objectMapper, String url, String key, int timeout) {
+		this.objectMapper = objectMapper;
+		this.url = url;
+		this.key = key;
+		this.timeout = timeout;
+		setHttpClientTimeout(httpclient);
 	}
 
 	public Map<Integer, CityListItem> getCityList() throws IOException {
@@ -341,6 +353,54 @@ public class UserSideClient {
 		}
 	}
 
+	public Integer getCustomerByPhone(String customerPhone) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "customer"));
+		params.add(new BasicNameValuePair("subcat", "get_abon_id"));
+		params.add(new BasicNameValuePair("data_typer", "phone"));
+		params.add(new BasicNameValuePair("data_value", customerPhone));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+			return result.getCustomerId();
+		} else {
+			return null;
+		}
+	}
+
+	public CustomerData getCustomerData(int customerId) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "customer"));
+		params.add(new BasicNameValuePair("subcat", "get_data"));
+		params.add(new BasicNameValuePair("customer_id", Integer.toString(customerId)));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		IndexIncapsulatedResponse<Integer, CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, CustomerData>>() {
+		});
+		if (result.getResult().equals("OK") && result.getData() != null && result.getData().containsKey(customerId)) {
+			return result.getData().get(customerId);
+		} else {
+			return null;
+		}
+	}
+
+
 	public Integer addTask(int taskType, @NotNull Date dateToDo, int customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
@@ -397,5 +457,19 @@ public class UserSideClient {
 		} else {
 			return null;
 		}
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	private void setHttpClientTimeout(HttpClient httpClient) {
+		HttpParams httpParams = httpClient.getParams();
+		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);
+		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, timeout * 1000);
 	}
 }
