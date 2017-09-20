@@ -12,7 +12,7 @@ import java.util.Map;
 public class CustomerData {
 
 	@JsonProperty("id")
-	private String id;
+	private int id;
 	@JsonProperty("full_name")
 	private String fullName;
 	@JsonProperty("flag_corporate")
@@ -61,12 +61,12 @@ public class CustomerData {
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
 	@JsonProperty("id")
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
 	@JsonProperty("id")
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -279,20 +279,6 @@ public class CustomerData {
 	public void setAdditionalProperty(String name, Object value) {
 		this.additionalProperties.put(name, value);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

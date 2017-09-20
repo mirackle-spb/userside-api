@@ -395,7 +395,7 @@ public class UserSideClient {
 		}
 	}
 
-	public Integer getCustomerByPhone(String customerPhone) throws IOException {
+	public List<Integer> getCustomerByPhone(String customerPhone) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
@@ -409,10 +409,9 @@ public class UserSideClient {
 
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		IdArrayResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdArrayResponse>() {
 		});
-		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+		if (result.getResult().equals("OK") && result.getCustomerId().size() > 0) {
 			return result.getCustomerId();
 		} else {
 			return null;
