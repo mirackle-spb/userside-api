@@ -391,10 +391,10 @@ public class UserSideClient {
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 
-		IndexIncapsulatedResponse<Integer, CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, CustomerData>>() {
+		IncapsulatedResponse<CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<CustomerData>>() {
 		});
-		if (result.getResult().equals("OK") && result.getData() != null && result.getData().containsKey(customerId)) {
-			return result.getData().get(customerId);
+		if (result.getResult().equals("OK") && result.getData() != null) {
+			return result.getData();
 		} else {
 			return null;
 		}

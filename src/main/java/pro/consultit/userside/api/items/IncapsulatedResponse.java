@@ -8,7 +8,7 @@ public class IncapsulatedResponse<T> {
 	private String result;
 	@JsonProperty("Error")
 	private String error;
-
+	@JsonProperty("data")
 	private T data;
 
 	protected IncapsulatedResponse() {
