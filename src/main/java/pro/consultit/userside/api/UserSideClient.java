@@ -156,6 +156,9 @@ public class UserSideClient {
 		}
 		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
 	}
+	/*
+	DO NOT USE WITH CommutaionType=CUSTOMER
+	 */
 
 	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(CommutaionType type, int objectId) throws IOException {
 		List<NameValuePair> params = new ArrayList<>();
@@ -172,12 +175,11 @@ public class UserSideClient {
 			case SWITCH:
 				params.add(new BasicNameValuePair("object_type", "switch"));
 				break;
-			case CUSTOMER:
-				params.add(new BasicNameValuePair("object_type", "customer"));
-				break;
+			default:
+				throw new IOException("DO NOT USE WITH CommutaionType=" + type.toString());
 		}
-		params.add(new BasicNameValuePair("is_finish_data", "1"));
 		params.add(new BasicNameValuePair("object_id", String.valueOf(objectId)));
+		params.add(new BasicNameValuePair("is_finish_data", "1"));
 
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		HttpGet httpget = new HttpGet(url + "?" + paramString);
@@ -195,6 +197,29 @@ public class UserSideClient {
 			}
 		}
 		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
+	}
+
+	public List<CommutationListItem> getCustomerCommutationList(int customerId) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "commutation"));
+		params.add(new BasicNameValuePair("action", "get_data"));
+		params.add(new BasicNameValuePair("object_type", "customer"));
+		params.add(new BasicNameValuePair("object_id", String.valueOf(customerId)));
+		params.add(new BasicNameValuePair("is_finish_data", "1"));
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IncapsulatedResponse<List<CommutationListItem>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<List<CommutationListItem>>>() {
+		});
+		if (!usResponse.getResult().equals("OK") || usResponse.getData().size() == 0) {
+			return null;
+		} else {
+			return usResponse.getData();
+		}
 	}
 
 	public IndexIncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {

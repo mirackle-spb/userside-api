@@ -2,6 +2,8 @@ package pro.consultit.userside.api.items;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +39,10 @@ public class DeviceListItem {
 	private Map<Integer, String> additionalOptionMap = new HashMap<>();
 	@JsonProperty("mark")
 	private Map<Integer, Integer> marks = new HashMap<>();
+	@JsonProperty("is_online")
+	@JsonSerialize(using = NumericBooleanSerializer.class)
+	@JsonDeserialize(using = NumericBooleanDeserializer.class)
+	private boolean online;
 
 	protected DeviceListItem() {
 	}
@@ -164,5 +170,13 @@ public class DeviceListItem {
 
 	public Map<Integer, Integer> getMarks() {
 		return marks;
+	}
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 }
