@@ -395,7 +395,7 @@ public class UserSideClient {
 		}
 	}
 
-	public List<Integer> getCustomerByPhone(String customerPhone) throws IOException {
+	public List<Integer> getCustomerByPhone(String customerPhone, boolean skipArchive) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
@@ -403,6 +403,11 @@ public class UserSideClient {
 		params.add(new BasicNameValuePair("subcat", "get_abon_id"));
 		params.add(new BasicNameValuePair("data_typer", "phone"));
 		params.add(new BasicNameValuePair("data_value", customerPhone));
+		if (skipArchive) {
+			params.add(new BasicNameValuePair("is_skip_old", "1"));
+		} else {
+			params.add(new BasicNameValuePair("is_skip_old", "0"));
+		}
 
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		HttpGet httpget = new HttpGet(url + "?" + paramString);
