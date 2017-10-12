@@ -231,11 +231,11 @@ public class UserSideClient {
 	}
 
 	public ActionResponse<Integer> addSystemMark(String name, String[] type_array) throws IOException, EncoderException {
-		String getString = url + "?key=" + key + "&cat=setting&action=mark_add&name=" + urlCodec.encode(name);
+		StringBuilder getString = new StringBuilder(url + "?key=" + key + "&cat=setting&action=mark_add&name=" + urlCodec.encode(name));
 		for (String type : type_array) {
-			getString += "&type_array[]=" + urlCodec.encode(type);
+			getString.append("&type_array[]=").append(urlCodec.encode(type));
 		}
-		HttpGet httpget = new HttpGet(getString);
+		HttpGet httpget = new HttpGet(getString.toString());
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 		return objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
