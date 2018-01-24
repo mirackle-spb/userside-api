@@ -472,7 +472,7 @@ public class UserSideClient {
 	}
 
 
-	public Integer addTask(int taskType, @NotNull Date dateToDo, Integer customerId, String description) throws IOException {
+	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @NotNull Integer customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -483,9 +483,37 @@ public class UserSideClient {
 		params.add(new BasicNameValuePair("subcat", "add"));
 		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
 		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
-		if (customerId != null) {
-			params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		if (description != null) {
+			params.add(new BasicNameValuePair("opis", description));
 		}
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
+
+		HttpEntity entity = response.getEntity();
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
+			return result.getCustomerId();
+		} else {
+			return null;
+		}
+	}
+
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @NotNull Integer houseCodeId, String description) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("subcat", "add"));
+		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
+		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
+		params.add(new BasicNameValuePair("housecode", String.valueOf(houseCodeId)));
 		if (description != null) {
 			params.add(new BasicNameValuePair("opis", description));
 		}
