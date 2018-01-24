@@ -472,7 +472,7 @@ public class UserSideClient {
 	}
 
 
-	public Integer addTask(int taskType, @NotNull Date dateToDo, int customerId, String description) throws IOException {
+	public Integer addTask(int taskType, @NotNull Date dateToDo, Integer customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -483,7 +483,9 @@ public class UserSideClient {
 		params.add(new BasicNameValuePair("subcat", "add"));
 		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
 		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
-		params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		if (customerId != null) {
+			params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		}
 		if (description != null) {
 			params.add(new BasicNameValuePair("opis", description));
 		}
