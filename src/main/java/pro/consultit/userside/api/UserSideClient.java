@@ -2,7 +2,6 @@ package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.internal.Nullable;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
@@ -21,6 +20,7 @@ import pro.consultit.userside.api.items.*;
 import pro.consultit.userside.api.items.customer.CustomerData;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -473,7 +473,7 @@ public class UserSideClient {
 	}
 
 
-	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @Nullable Integer customerId, String description) throws IOException {
+	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @Null Integer customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -505,7 +505,7 @@ public class UserSideClient {
 		}
 	}
 
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @Nullable Integer houseCodeId, String description) throws IOException {
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @Null Integer houseCodeId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
