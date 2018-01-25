@@ -2,6 +2,7 @@ package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.istack.internal.Nullable;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
@@ -472,7 +473,7 @@ public class UserSideClient {
 	}
 
 
-	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @NotNull Integer customerId, String description) throws IOException {
+	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @Nullable Integer customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -483,7 +484,9 @@ public class UserSideClient {
 		params.add(new BasicNameValuePair("subcat", "add"));
 		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
 		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
-		params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		if (customerId != null) {
+			params.add(new BasicNameValuePair("usercode", String.valueOf(customerId)));
+		}
 		if (description != null) {
 			params.add(new BasicNameValuePair("opis", description));
 		}
@@ -502,7 +505,7 @@ public class UserSideClient {
 		}
 	}
 
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @NotNull Integer houseCodeId, String description) throws IOException {
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @Nullable Integer houseCodeId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -513,7 +516,9 @@ public class UserSideClient {
 		params.add(new BasicNameValuePair("subcat", "add"));
 		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
 		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
-		params.add(new BasicNameValuePair("housecode", String.valueOf(houseCodeId)));
+		if (houseCodeId != null) {
+			params.add(new BasicNameValuePair("housecode", String.valueOf(houseCodeId)));
+		}
 		if (description != null) {
 			params.add(new BasicNameValuePair("opis", description));
 		}
