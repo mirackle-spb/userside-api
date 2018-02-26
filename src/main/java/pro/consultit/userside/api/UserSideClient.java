@@ -266,6 +266,46 @@ public class UserSideClient {
 	}
 
 	/**
+	 * Looking for item inventory category identifier by item name
+	 *
+	 * @return id of US category or null if not found
+	 * @throws IOException
+	 * @throws EncoderException
+	 */
+	public Map<Integer, InventoryCatalogItem> getInventoryCatalogList() throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_catalog");
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexIncapsulatedResponse<Integer, InventoryCatalogItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, InventoryCatalogItem>>() {
+		});
+		if (result.getResult() != null && result.getResult().equals("OK")) {
+			return result.getData();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Looking for item inventory category identifier by item name
+	 *
+	 * @return id of US category or null if not found
+	 * @throws IOException
+	 * @throws EncoderException
+	 */
+	public Map<Integer, InventoryCatalogSectionItem> getInventoryCatalogSectionList() throws IOException, EncoderException {
+		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_section_catalog");
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexIncapsulatedResponse<Integer, InventoryCatalogSectionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, InventoryCatalogSectionItem>>() {
+		});
+		if (result.getResult() != null && result.getResult().equals("OK")) {
+			return result.getData();
+		} else {
+			return null;
+		}
+	}
+
+	/**
 	 * Looking for item inventory id by asset number
 	 *
 	 * @param assetNumber asset number
