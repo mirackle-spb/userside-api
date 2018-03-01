@@ -3,6 +3,7 @@ package pro.consultit.userside.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.items.*;
+import pro.consultit.userside.api.items.address.*;
 import pro.consultit.userside.api.items.customer.CustomerData;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserSideClient {
 
@@ -50,75 +53,162 @@ public class UserSideClient {
 		setHttpClientTimeout(httpclient);
 	}
 
-	public Map<Integer, CityListItem> getCityList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_city_list");
+	public Map<Integer, RegionItem> getRegionList() throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_province"));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, CityListItem>>() {
+		IndexEncapsulatedResponse<Integer, RegionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, RegionItem>>() {
 		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
 	}
 
-	public Map<Integer, DistrictListItem> getDistrictList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_city_district_list");
+	public Map<Integer, RegionDistrictItem> getRegionDistrictList() throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_provinsadfce"));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, DistrictListItem>>() {
+		IndexEncapsulatedResponse<Integer, RegionDistrictItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, RegionDistrictItem>>() {
 		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
 	}
 
-	public Map<Integer, StreetListItem> getStreetList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=module&request=get_street_list");
+	public Map<Integer, CityItem> getCityList(Integer regionId) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_city"));
+		if (regionId != null) {
+			params.add(new BasicNameValuePair("province_id", regionId.toString()));
+		}
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<Integer, StreetListItem>>() {
+		IndexEncapsulatedResponse<Integer, CityItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, CityItem>>() {
 		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
 	}
 
-	public IndexIncapsulatedResponse<Integer, HouseListItem> getHouseList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=address&action=get_house");
+	public Map<Integer, CityDistrictItem> getCityDistrictList(Integer cityId) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_area"));
+		if (cityId != null) {
+			params.add(new BasicNameValuePair("city_id", cityId.toString()));
+		}
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
+		IndexEncapsulatedResponse<Integer, CityDistrictItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, CityDistrictItem>>() {
 		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
 	}
 
-	public IndexIncapsulatedResponse<Integer, HouseListItem> getHouse(int houseId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=address&action=get_house&id=" + houseId);
+	public Map<Integer, StreetItem> getStreetList(@NotNull List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_street"));
+		params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
+			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		}
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, HouseListItem>>() {
+		IndexEncapsulatedResponse<Integer, StreetItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, StreetItem>>() {
 		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
 	}
 
-	public IndexIncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
+	public Map<Integer, HouseItem> getHouse( List<Integer> cityIdList, List<Integer> cityRegionIdList,List<Integer> streetIdList) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_house"));
+		if (cityIdList != null && cityIdList.size() > 0) {
+			params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		}
+		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
+			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		}
+		if (streetIdList != null && streetIdList.size() > 0) {
+			params.add(new BasicNameValuePair("street_id", String.join(",", streetIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		}
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexEncapsulatedResponse<Integer, HouseItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, HouseItem>>() {
+		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData();
+		} else {
+			return null;
+		}
+	}
+
+	public IndexEncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=house");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, AdditionalParam>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, AdditionalParam>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<Integer, AdditionalParam> getDeviceAdditionalParameterList() throws IOException {
+	public IndexEncapsulatedResponse<Integer, AdditionalParam> getDeviceAdditionalParameterList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=switch");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, AdditionalParam>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, AdditionalParam>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<Integer, OperatorResponse> getOperator(int operatorId) throws IOException {
+	public IndexEncapsulatedResponse<Integer, OperatorResponse> getOperator(int operatorId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=operator&action=get&id=" + operatorId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, OperatorResponse>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, OperatorResponse>>() {
 		});
 	}
 
-	public IndexIncapsulatedResponse<Integer, DeviceListItem> getDevice(int deviceId) throws IOException {
+	public IndexEncapsulatedResponse<Integer, DeviceListItem> getDevice(int deviceId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_data&object_type=switch&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, DeviceListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, DeviceListItem>>() {
 		});
 	}
 
@@ -141,11 +231,11 @@ public class UserSideClient {
 	}
 
 	@Deprecated
-	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(int deviceId) throws IOException {
+	public EncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(int deviceId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=commutation&action=get_data&object_type=switch&is_finish_data=1&object_id=" + deviceId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
+		EncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
 		});
 		Map<Integer, CommutationListItem[]> resultMap = new HashMap<>();
 		if (usResponse.getData() != null) {
@@ -155,13 +245,13 @@ public class UserSideClient {
 				}
 			}
 		}
-		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
+		return new EncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
 	}
 	/*
 	DO NOT USE WITH CommutaionType=CUSTOMER
 	 */
 
-	public IncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(CommutaionType type, int objectId) throws IOException {
+	public EncapsulatedResponse<Map<Integer, CommutationListItem[]>> getCommutationList(CommutaionType type, int objectId) throws IOException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "commutation"));
@@ -187,7 +277,7 @@ public class UserSideClient {
 
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
+		EncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<Map<Integer, Map<String, CommutationListItem>>>>() {
 		});
 		Map<Integer, CommutationListItem[]> resultMap = new HashMap<>();
 		if (usResponse.getData() != null) {
@@ -197,7 +287,7 @@ public class UserSideClient {
 				}
 			}
 		}
-		return new IncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
+		return new EncapsulatedResponse<>(usResponse.getResult(), usResponse.getError(), resultMap);
 	}
 
 	public List<CommutationListItem> getCustomerCommutationList(int customerId) throws IOException {
@@ -214,7 +304,7 @@ public class UserSideClient {
 
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IncapsulatedResponse<List<CommutationListItem>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<List<CommutationListItem>>>() {
+		EncapsulatedResponse<List<CommutationListItem>> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<List<CommutationListItem>>>() {
 		});
 		if (!usResponse.getResult().equals("OK") || usResponse.getData().size() == 0) {
 			return null;
@@ -223,11 +313,11 @@ public class UserSideClient {
 		}
 	}
 
-	public IndexIncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {
+	public IndexEncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=setting&action=mark_show");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, SystemMarkItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, SystemMarkItem>>() {
 		});
 	}
 
@@ -276,7 +366,7 @@ public class UserSideClient {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_catalog");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IndexIncapsulatedResponse<Integer, InventoryCatalogItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, InventoryCatalogItem>>() {
+		IndexEncapsulatedResponse<Integer, InventoryCatalogItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, InventoryCatalogItem>>() {
 		});
 		if (result.getResult() != null && result.getResult().equals("OK")) {
 			return result.getData();
@@ -296,7 +386,7 @@ public class UserSideClient {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_section_catalog");
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		IndexIncapsulatedResponse<Integer, InventoryCatalogSectionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexIncapsulatedResponse<Integer, InventoryCatalogSectionItem>>() {
+		IndexEncapsulatedResponse<Integer, InventoryCatalogSectionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, InventoryCatalogSectionItem>>() {
 		});
 		if (result.getResult() != null && result.getResult().equals("OK")) {
 			return result.getData();
@@ -380,11 +470,11 @@ public class UserSideClient {
 	 * @throws EncoderException
 	 */
 
-	public IncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException {
+	public EncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException {
 		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory&id=" + inventoryId);
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<InventoryListItem>>() {
+		return objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<InventoryListItem>>() {
 		});
 	}
 
@@ -503,7 +593,7 @@ public class UserSideClient {
 		HttpResponse response = httpclient.execute(httpget);
 		HttpEntity entity = response.getEntity();
 
-		IncapsulatedResponse<CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<IncapsulatedResponse<CustomerData>>() {
+		EncapsulatedResponse<CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<CustomerData>>() {
 		});
 		if (result.getResult().equals("OK") && result.getData() != null) {
 			return result.getData();
@@ -604,6 +694,58 @@ public class UserSideClient {
 			return null;
 		}
 	}
+
+	public boolean doLogin(String username, String password) {
+		String fingerprint = DigestUtils.md5Hex(password);
+		HttpGet httpget = null;
+		HttpEntity entity = null;
+		EncapsulatedResponse<String> incResponse = null;
+		try {
+			httpget = new HttpGet(url + "?key=" + key + "&cat=operator&action=check_pass&login=" + urlCodec.encode(username) + "&pass=" + urlCodec.encode(fingerprint));
+			HttpResponse response = httpclient.execute(httpget);
+			entity = response.getEntity();
+			incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<String>>() {
+			});
+		} catch (EncoderException | IOException e) {
+			return false;
+		}
+		return incResponse != null && incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("ok");
+
+	}
+
+	public boolean checkTaskVerifyCode(int taskId, String code) {
+		HttpGet httpget = null;
+		HttpEntity entity = null;
+		EncapsulatedResponse<String> incResponse = null;
+		try {
+			httpget = new HttpGet(url + "?key=" + key + "&cat=task&action=check_verify_code&id=" + taskId + "&verify_code=" + urlCodec.encode(code));
+			HttpResponse response = httpclient.execute(httpget);
+			entity = response.getEntity();
+			incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<String>>() {
+			});
+		} catch (EncoderException | IOException e) {
+			return false;
+		}
+		return incResponse != null && incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("ok");
+
+	}
+
+	public EncapsulatedResponse<TaskItem> getTask(int taskId) {
+		HttpGet httpget = null;
+		HttpEntity entity = null;
+		EncapsulatedResponse<TaskItem> incResponse = null;
+		try {
+			httpget = new HttpGet(url + "?key=" + key + "&cat=task&action=show&id=" + urlCodec.encode(taskId));
+			HttpResponse response = httpclient.execute(httpget);
+			entity = response.getEntity();
+			incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<TaskItem>>() {
+			});
+		} catch (EncoderException | IOException e) {
+			return null;
+		}
+		return incResponse;
+	}
+
 
 	public int getTimeout() {
 		return timeout;

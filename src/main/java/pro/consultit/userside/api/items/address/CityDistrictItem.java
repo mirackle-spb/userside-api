@@ -1,21 +1,19 @@
-package pro.consultit.userside.api.items;
+package pro.consultit.userside.api.items.address;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by kuzmich on 18.04.16.
- */
-public class DistrictListItem {
+public class CityDistrictItem {
+	@JsonProperty("id")
 	private int id;
 	@JsonProperty("city_id")
 	private int cityId;
+	@JsonProperty("name")
 	private String name;
 
-
-	protected DistrictListItem() {
+	protected CityDistrictItem() {
 	}
 
-	public DistrictListItem(int id, int cityId, String name) {
+	public CityDistrictItem(int id, int cityId, String name) {
 		this.id = id;
 		this.cityId = cityId;
 		this.name = name;
@@ -25,7 +23,7 @@ public class DistrictListItem {
 		return id;
 	}
 
-	public DistrictListItem setId(int id) {
+	public CityDistrictItem setId(int id) {
 		this.id = id;
 		return this;
 	}
@@ -34,7 +32,7 @@ public class DistrictListItem {
 		return cityId;
 	}
 
-	public DistrictListItem setCityId(int cityId) {
+	public CityDistrictItem setCityId(int cityId) {
 		this.cityId = cityId;
 		return this;
 	}
@@ -43,7 +41,7 @@ public class DistrictListItem {
 		return name;
 	}
 
-	public DistrictListItem setName(String name) {
+	public CityDistrictItem setName(String name) {
 		this.name = name;
 		return this;
 	}

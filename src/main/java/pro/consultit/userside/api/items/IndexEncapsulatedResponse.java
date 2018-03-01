@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndexIncapsulatedResponse<I, T> {
+public class IndexEncapsulatedResponse<I, T> {
 	@JsonProperty("Result")
 	private String result;
 	@JsonProperty("Error")
@@ -13,14 +13,14 @@ public class IndexIncapsulatedResponse<I, T> {
 
 	private Map<I, T> data = new HashMap();
 
-	protected IndexIncapsulatedResponse() {
+	protected IndexEncapsulatedResponse() {
 	}
 
 	public String getResult() {
 		return result;
 	}
 
-	public IndexIncapsulatedResponse setResult(String result) {
+	public IndexEncapsulatedResponse setResult(String result) {
 		this.result = result;
 		return this;
 	}
@@ -29,7 +29,7 @@ public class IndexIncapsulatedResponse<I, T> {
 		return error;
 	}
 
-	public IndexIncapsulatedResponse setError(String error) {
+	public IndexEncapsulatedResponse setError(String error) {
 		this.error = error;
 		return this;
 	}

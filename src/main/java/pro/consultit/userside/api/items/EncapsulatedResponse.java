@@ -2,7 +2,7 @@ package pro.consultit.userside.api.items;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class IncapsulatedResponse<T> {
+public class EncapsulatedResponse<T> {
 
 	@JsonProperty("Result")
 	private String result;
@@ -11,10 +11,10 @@ public class IncapsulatedResponse<T> {
 	@JsonProperty("data")
 	private T data;
 
-	protected IncapsulatedResponse() {
+	protected EncapsulatedResponse() {
 	}
 
-	public IncapsulatedResponse(String result, String error, T data) {
+	public EncapsulatedResponse(String result, String error, T data) {
 		this.result = result;
 		this.error = error;
 		this.data = data;
@@ -40,7 +40,7 @@ public class IncapsulatedResponse<T> {
 		return error;
 	}
 
-	public IncapsulatedResponse setError(String error) {
+	public EncapsulatedResponse setError(String error) {
 		this.error = error;
 		return this;
 	}
