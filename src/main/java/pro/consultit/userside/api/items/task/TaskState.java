@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskState {
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("systemRole")
-	private int systemRole;
+	private Integer systemRole;
 
 	protected TaskState() {
 	}

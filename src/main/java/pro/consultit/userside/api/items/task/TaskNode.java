@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskNode {
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 
 	protected TaskNode() {
 	}

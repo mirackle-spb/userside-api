@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskType {
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("name")
 	private String name;
 

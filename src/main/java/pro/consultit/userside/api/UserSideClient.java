@@ -153,7 +153,7 @@ public class UserSideClient {
 		}
 	}
 
-	public Map<Integer, HouseItem> getHouse( List<Integer> cityIdList, List<Integer> cityRegionIdList,List<Integer> streetIdList) throws IOException {
+	public Map<Integer, HouseItem> getHouse(List<Integer> cityIdList, List<Integer> cityRegionIdList, List<Integer> streetIdList) throws IOException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
@@ -735,12 +735,12 @@ public class UserSideClient {
 		HttpEntity entity = null;
 		EncapsulatedResponse<TaskItem> incResponse = null;
 		try {
-			httpget = new HttpGet(url + "?key=" + key + "&cat=task&action=show&id=" + urlCodec.encode(taskId));
+			httpget = new HttpGet(url + "?key=" + key + "&cat=task&action=show&id=" + taskId);
 			HttpResponse response = httpclient.execute(httpget);
 			entity = response.getEntity();
 			incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<TaskItem>>() {
 			});
-		} catch (EncoderException | IOException e) {
+		} catch (IOException e) {
 			return null;
 		}
 		return incResponse;

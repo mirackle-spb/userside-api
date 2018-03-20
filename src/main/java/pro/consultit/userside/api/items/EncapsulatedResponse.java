@@ -1,5 +1,6 @@
 package pro.consultit.userside.api.items;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EncapsulatedResponse<T> {
@@ -8,7 +9,7 @@ public class EncapsulatedResponse<T> {
 	private String result;
 	@JsonProperty("Error")
 	private String error;
-	@JsonProperty("data")
+	@JsonAlias({"data", "Data"})
 	private T data;
 
 	protected EncapsulatedResponse() {

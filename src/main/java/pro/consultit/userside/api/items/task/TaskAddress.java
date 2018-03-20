@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskAddress {
 	@JsonProperty("cityId")
-	private int cityId;
+	private Integer cityId;
 	@JsonProperty("houseId")
-	private int houseId;
+	private Integer houseId;
 	@JsonProperty("apartament")
-	private int apartament;
+	private Integer apartament;
 	@JsonProperty("text")
 	private String text;
 

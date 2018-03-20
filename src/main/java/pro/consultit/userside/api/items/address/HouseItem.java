@@ -3,7 +3,9 @@ package pro.consultit.userside.api.items.address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,6 +35,8 @@ public class HouseItem {
 	private String fullName;
 	@JsonProperty("street2_id")
 	private int street2Id;
+	@JsonProperty("coordinates")
+	private List<Double[]> coordinatesList = new ArrayList<>();
 	private Integer number2;
 	private String block2;
 
@@ -190,5 +194,14 @@ public class HouseItem {
 	public HouseItem setBlock2(String block2) {
 		this.block2 = block2;
 		return this;
+	}
+
+	public HouseItem setCoordinatesList(List<Double[]> coordinatesList) {
+		this.coordinatesList = coordinatesList;
+		return this;
+	}
+
+	public List<Double[]> getCoordinatesList() {
+		return coordinatesList;
 	}
 }

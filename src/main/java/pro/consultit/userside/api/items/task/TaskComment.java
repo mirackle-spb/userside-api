@@ -10,12 +10,12 @@ import java.util.Date;
 public class TaskComment {
 
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("dateAdd")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date dateAdd;
 	@JsonProperty("operatorId")
-	private int operatorId;
+	private Integer operatorId;
 	@JsonProperty("comment")
 	private String comment;
 
