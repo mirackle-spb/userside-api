@@ -8,14 +8,14 @@ public class IdResponse {
 	@JsonProperty("Result")
 	private String result;
 	@JsonProperty("Id")
-	private Integer customerId;
+	private Integer resultId;
 
 	protected IdResponse() {
 	}
 
-	public IdResponse(String result, Integer customerId) {
+	public IdResponse(String result, Integer resultId) {
 		this.result = result;
-		this.customerId = customerId;
+		this.resultId = resultId;
 	}
 
 	public String getResult() {
@@ -26,11 +26,11 @@ public class IdResponse {
 		this.result = result;
 	}
 
-	public Integer getCustomerId() {
-		return customerId;
+	public Integer getResultId() {
+		return resultId;
 	}
 
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
+	public void setResultId(Integer resultId) {
+		this.resultId = resultId;
 	}
 }

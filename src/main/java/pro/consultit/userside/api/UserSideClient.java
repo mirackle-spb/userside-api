@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -22,7 +23,6 @@ import pro.consultit.userside.api.items.address.*;
 import pro.consultit.userside.api.items.customer.CustomerData;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -544,8 +544,8 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
-		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
-			return result.getCustomerId();
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
 		} else {
 			return null;
 		}
@@ -603,7 +603,7 @@ public class UserSideClient {
 	}
 
 
-	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @Null Integer customerId, String description) throws IOException {
+	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @NotNull Integer customerId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -628,14 +628,15 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
-		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
-			return result.getCustomerId();
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
 		} else {
 			return null;
 		}
 	}
 
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, @Null Integer houseCodeId, String description) throws IOException {
+	@Deprecated
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, Integer houseCodeId, String description) throws IOException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -660,11 +661,134 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
-		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
-			return result.getCustomerId();
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
 		} else {
 			return null;
 		}
+	}
+
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, String clientFullname, Integer cityCodeId, Integer houseCodeId, Integer apartmentNumber, String description) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("subcat", "add"));
+		params.add(new BasicNameValuePair("work_typer", String.valueOf(taskType)));
+		params.add(new BasicNameValuePair("work_datedo", dateFormat.format(dateToDo)));
+		if (cityCodeId != null) {
+			params.add(new BasicNameValuePair("citycode", String.valueOf(cityCodeId)));
+		}
+		if (houseCodeId != null) {
+			params.add(new BasicNameValuePair("housecode", String.valueOf(houseCodeId)));
+		}
+		if (apartmentNumber != null) {
+			params.add(new BasicNameValuePair("apart", String.valueOf(apartmentNumber)));
+		}
+		if (clientFullname != null) {
+			params.add(new BasicNameValuePair("fio", clientFullname));
+		}
+		if (description != null) {
+			params.add(new BasicNameValuePair("opis", description));
+		}
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
+
+		HttpEntity entity = response.getEntity();
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
+		} else {
+			return null;
+		}
+	}
+
+	public Integer addClient(@NotNull String clientFullname, Integer clientBillingId, Integer billingId, Boolean isPotential) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "customer"));
+		params.add(new BasicNameValuePair("subcat", "add"));
+		params.add(new BasicNameValuePair("fio", clientFullname));
+		if (clientBillingId != null && billingId != null) {
+			params.add(new BasicNameValuePair("codeti", String.valueOf(clientBillingId)));
+			params.add(new BasicNameValuePair("billing_id", String.valueOf(billingId)));
+		}
+		if (isPotential != null) {
+			params.add(new BasicNameValuePair("is_potential", String.valueOf(isPotential)));
+		}
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
+
+		HttpEntity entity = response.getEntity();
+		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
+		});
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
+		} else {
+			return null;
+		}
+	}
+
+	public boolean editClient(@NotNull Integer clientId, String clientFullname,
+	                          String agreementNumber, Date agreementDate,
+	                          Integer apartmentNumber, String email,
+	                          Integer floor, Integer houseId, String login,
+	                          String phone0, String phone1, Boolean isPotential) throws IOException {
+
+		List<NameValuePair> params = new ArrayList<>();
+
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "customer"));
+		params.add(new BasicNameValuePair("subcat", "edit"));
+		params.add(new BasicNameValuePair("id", String.valueOf(clientId)));
+		if (clientFullname != null) {
+			params.add(new BasicNameValuePair("name", clientFullname));
+		}
+		if (agreementNumber != null && agreementDate != null) {
+			params.add(new BasicNameValuePair("agreement_number", String.valueOf(agreementNumber)));
+			params.add(new BasicNameValuePair("agreement_date", String.valueOf(agreementDate)));
+		}
+		if (email != null) {
+			params.add(new BasicNameValuePair("email", email));
+		}
+		if (houseId != null) {
+			params.add(new BasicNameValuePair("house_id", String.valueOf(houseId)));
+		}
+		if (apartmentNumber != null) {
+			params.add(new BasicNameValuePair("apartment_number", String.valueOf(apartmentNumber)));
+		}
+		if (floor != null) {
+			params.add(new BasicNameValuePair("floor", String.valueOf(floor)));
+		}
+		if (login != null) {
+			params.add(new BasicNameValuePair("login", login));
+		}
+		if (phone0 != null) {
+			params.add(new BasicNameValuePair("phone0", phone0));
+		}
+		if (phone1 != null) {
+			params.add(new BasicNameValuePair("phone1", phone1));
+		}
+		if (isPotential != null) {
+			params.add(new BasicNameValuePair("is_potential", String.valueOf(isPotential)));
+		}
+
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
+		HttpResponse response = httpclient.execute(httpPost);
+		HttpEntity entity = response.getEntity();
+		String responseBody = IOUtils.toString(entity.getContent(), "UTF-8");
+		return response.getStatusLine().getStatusCode() == 200;
 	}
 
 	public Integer addTaskComment(int taskId, String description) throws IOException {
@@ -688,8 +812,8 @@ public class UserSideClient {
 		HttpEntity entity = response.getEntity();
 		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
-		if (result.getResult().equals("OK") && result.getCustomerId() != null) {
-			return result.getCustomerId();
+		if (result.getResult().equals("OK") && result.getResultId() != null) {
+			return result.getResultId();
 		} else {
 			return null;
 		}
