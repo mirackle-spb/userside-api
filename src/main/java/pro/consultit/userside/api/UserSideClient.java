@@ -722,7 +722,7 @@ public class UserSideClient {
 			params.add(new BasicNameValuePair("billing_id", String.valueOf(billingId)));
 		}
 		if (isPotential != null) {
-			params.add(new BasicNameValuePair("is_potential", String.valueOf(isPotential)));
+			params.add(new BasicNameValuePair("is_potential", isPotential ? "1" : "0"));
 		}
 
 		HttpPost httpPost = new HttpPost(url);
@@ -780,7 +780,7 @@ public class UserSideClient {
 			params.add(new BasicNameValuePair("phone1", phone1));
 		}
 		if (isPotential != null) {
-			params.add(new BasicNameValuePair("is_potential", String.valueOf(isPotential)));
+			params.add(new BasicNameValuePair("is_potential", isPotential ? "1" : "0"));
 		}
 
 		HttpPost httpPost = new HttpPost(url);
