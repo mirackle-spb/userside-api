@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class IdResponse {
 	@JsonProperty("Result")
 	private String result;
+	@JsonProperty("ErrorText")
+	private String error;
 	@JsonProperty("Id")
 	private Integer resultId;
 
@@ -32,5 +34,14 @@ public class IdResponse {
 
 	public void setResultId(Integer resultId) {
 		this.resultId = resultId;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public IdResponse setError(String error) {
+		this.error = error;
+		return this;
 	}
 }
