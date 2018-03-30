@@ -153,4 +153,23 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 			return null;
 		}
 	}
+
+	public HouseItem getHouse(Integer houseId) throws IOException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_house"));
+		params.add(new BasicNameValuePair("id", String.valueOf(houseId)));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexEncapsulatedResponse<Integer, HouseItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, HouseItem>>() {
+		});
+		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
+			return result.getData().get(houseId);
+		} else {
+			return null;
+		}
+	}
 }

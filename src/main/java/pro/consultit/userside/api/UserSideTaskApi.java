@@ -167,7 +167,7 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 
 	public boolean checkTaskVerifyCode(int taskId, String code) throws IOException, UserSideApiErrorException {
 		HttpEntity entity = null;
-		EncapsulatedResponse<String> incResponse = null;
+		IdResponse incResponse = null;
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "task"));
@@ -179,9 +179,9 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		HttpGet httpget = new HttpGet(url + "?" + paramString);
 		HttpResponse response = httpclient.execute(httpget);
 		entity = response.getEntity();
-		incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<String>>() {
+		incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
 		});
-		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK")) {
 			return true;
 		}
 		if (incResponse.getError() != null) {
