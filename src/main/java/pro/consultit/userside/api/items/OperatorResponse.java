@@ -17,6 +17,8 @@ public class OperatorResponse {
 	@JsonProperty("last_activity_time")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date lastActivityTime;
+	@JsonProperty("staff_id")
+	private int staffId;
 	private Map<String, Integer> rights = new HashMap<>();
 
 	protected OperatorResponse() {
@@ -77,5 +79,14 @@ public class OperatorResponse {
 
 	public void setRights(Map<String, Integer> rights) {
 		this.rights = rights;
+	}
+
+	public int getStaffId() {
+		return staffId;
+	}
+
+	public OperatorResponse setStaffId(int staffId) {
+		this.staffId = staffId;
+		return this;
 	}
 }

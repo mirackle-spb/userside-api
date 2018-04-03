@@ -1,5 +1,6 @@
 package pro.consultit.userside.api.items;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +10,7 @@ public class IdResponse {
 	private String result;
 	@JsonProperty("ErrorText")
 	private String error;
-	@JsonProperty("Id")
+	@JsonAlias({"id", "Id"})
 	private Integer resultId;
 
 	protected IdResponse() {
