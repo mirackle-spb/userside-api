@@ -12,7 +12,10 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.EncapsulatedResponse;
 import pro.consultit.userside.api.items.IdResponse;
+import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
 import pro.consultit.userside.api.items.TaskItem;
+import pro.consultit.userside.api.items.task.TaskCatalogState;
+import pro.consultit.userside.api.items.task.TaskCatalogType;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -208,6 +211,60 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 
 		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
 			return incResponse.getData();
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	public List<TaskCatalogType> getTaskCatalogType(Integer type_id) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("action", "get_catalog_type"));
+		if (type_id != null) {
+			params.add(new BasicNameValuePair("type_id", String.valueOf(type_id)));
+		}
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexEncapsulatedResponse<Integer, TaskCatalogType> incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, TaskCatalogType>>() {
+		});
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return new ArrayList<>(incResponse.getData().values());
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	public List<TaskCatalogState> getTaskCatalogState(Integer state_id) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("action", "get_catalog_state"));
+		if (state_id != null) {
+			params.add(new BasicNameValuePair("state_id", String.valueOf(state_id)));
+		}
+
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+		IndexEncapsulatedResponse<Integer, TaskCatalogState> incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, TaskCatalogState>>() {
+		});
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return new ArrayList<>(incResponse.getData().values());
 		}
 		if (incResponse.getError() != null) {
 			throw new UserSideApiErrorException(incResponse.getError());
