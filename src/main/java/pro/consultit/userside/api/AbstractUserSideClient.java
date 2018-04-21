@@ -1,11 +1,21 @@
 package pro.consultit.userside.api;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.net.URLCodec;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
+import pro.consultit.userside.api.response.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractUserSideClient {
 
@@ -13,7 +23,6 @@ public abstract class AbstractUserSideClient {
 	protected String key;
 	protected ObjectMapper objectMapper;
 	protected HttpClient httpclient = new DefaultHttpClient();
-	protected URLCodec urlCodec = new URLCodec();
 	protected int timeout = 5;
 
 	public AbstractUserSideClient(ObjectMapper objectMapper, String url, String key) {
@@ -44,6 +53,157 @@ public abstract class AbstractUserSideClient {
 		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);
 		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, timeout * 1000);
 	}
+
+	protected <T> List<T> executeIndexEncapsulatedRequest(Class<T> returnClass, List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructParametricType(IndexEncapsulatedResponse.class, Integer.class, returnClass);
+		IndexEncapsulatedResponse<Integer, T> incResponse = objectMapper.readValue(entity.getContent(), type);
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return new ArrayList<>(incResponse.getData().values());
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	protected <T> T executeEncapsulatedRequest(Class<T> returnClass, List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructParametricType(EncapsulatedResponse.class, returnClass);
+		EncapsulatedResponse<T> incResponse = objectMapper.readValue(entity.getContent(), type);
+
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return incResponse.getData();
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	protected <T> List<T> executeArrayRequest(Class<T> returnClass, List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructParametricType(ArrayResponse.class, returnClass);
+		ArrayResponse<T> incResponse = objectMapper.readValue(entity.getContent(), type);
+
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return incResponse.getData();
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	protected List<Integer> executeIdArrayRequest(List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructType(IdArrayResponse.class);
+		IdArrayResponse incResponse = objectMapper.readValue(entity.getContent(), type);
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getCustomerId() != null) {
+			return incResponse.getCustomerId();
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	protected Integer executeIdRequest(List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		IdResponse idResponse = objectMapper.readValue(entity.getContent(), objectMapper.getTypeFactory().constructType(IdResponse.class));
+
+		if (idResponse.getResult() != null && idResponse.getResult().equalsIgnoreCase("OK")) {
+			return idResponse.getResultId();
+		}
+		if (idResponse.getError() != null) {
+			throw new UserSideApiErrorException(idResponse.getError());
+		} else {
+			return null;
+		}
+	}
+
+	protected boolean executeBooleanRequest(List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		DefaultResponse responseObject = objectMapper.readValue(entity.getContent(), objectMapper.getTypeFactory().constructType(DefaultResponse.class));
+
+		if (responseObject.getResult() != null && responseObject.getResult().equalsIgnoreCase("OK")) {
+			return true;
+		}
+		if (responseObject.getError() != null) {
+			throw new UserSideApiErrorException(responseObject.getError());
+		} else {
+			return false;
+		}
+	}
+
 
 	public enum CommutaionType {
 		CUSTOMER, SWITCH, CROSS, FIBER

@@ -1,18 +1,14 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.EncoderException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import pro.consultit.userside.api.items.ActionResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.DeviceListItem;
-import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserSideDeviceApi extends AbstractUserSideClient {
 	public UserSideDeviceApi(ObjectMapper objectMapper, String url, String key) {
@@ -23,30 +19,41 @@ public class UserSideDeviceApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public IndexEncapsulatedResponse<Integer, DeviceListItem> getDevice(int deviceId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_data&object_type=switch&object_id=" + deviceId);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, DeviceListItem>>() {
-		});
+	public List<DeviceListItem> getDevice(Integer deviceId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "get_data"));
+		params.add(new BasicNameValuePair("object_type", "switch"));
+		if (deviceId != null) {
+			params.add(new BasicNameValuePair("object_id", String.valueOf(deviceId)));
+		}
+		return executeIndexEncapsulatedRequest(DeviceListItem.class, params);
 	}
 
-	public boolean appendDeviceMark(int deviceId, int markId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=add_mark&object_type=switch&object_id=" + deviceId + "&mark_id=" + markId);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		ActionResponse<Integer> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
-		});
-		return usResponse.getResult() != null && usResponse.getResult().equals("OK");
+	public boolean appendDeviceMark(@NotNull Integer deviceId, @NotNull Integer markId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "add_mark"));
+		params.add(new BasicNameValuePair("object_type", "switch"));
+
+		params.add(new BasicNameValuePair("object_id", String.valueOf(deviceId)));
+		params.add(new BasicNameValuePair("mark_id", String.valueOf(markId)));
+		return executeBooleanRequest(params);
 	}
 
-	public boolean deleteDeviceMark(int deviceId, int markId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=delete_mark&object_type=switch&object_id=" + deviceId + "&mark_id=" + markId);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		ActionResponse<Integer> usResponse = objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
-		});
-		return usResponse.getResult() != null && usResponse.getResult().equals("OK");
+	public boolean deleteDeviceMark(int deviceId, int markId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "delete_mark"));
+		params.add(new BasicNameValuePair("object_type", "switch"));
+
+		params.add(new BasicNameValuePair("object_id", String.valueOf(deviceId)));
+		params.add(new BasicNameValuePair("mark_id", String.valueOf(markId)));
+
+		return executeBooleanRequest(params);
 	}
 
 	/**
@@ -55,20 +62,18 @@ public class UserSideDeviceApi extends AbstractUserSideClient {
 	 * @param assetNumber asset number
 	 * @return id of devoce item or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
 
-	public Integer getDeviceId(String assetNumber) throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_device_id&object_type=switch&data_typer=inventory_number&data_value=" + urlCodec.encode(assetNumber));
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+	public Integer getDeviceId(String assetNumber) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "get_device_id"));
+		params.add(new BasicNameValuePair("object_type", "switch"));
+		params.add(new BasicNameValuePair("data_typer", "inventory_number"));
+		params.add(new BasicNameValuePair("data_value", assetNumber));
+		return executeIdRequest(params);
 	}
 
 	/**
@@ -77,19 +82,18 @@ public class UserSideDeviceApi extends AbstractUserSideClient {
 	 * @param ipAddress ip address
 	 * @return id of devoce item or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
 
-	public Integer getDeviceIdByIpAddress(String ipAddress) throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=device&action=get_device_id&object_type=switch&data_typer=ip&data_value=" + urlCodec.encode(ipAddress));
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+	public Integer getDeviceIdByIpAddress(@NotNull String ipAddress) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "get_device_id"));
+		params.add(new BasicNameValuePair("object_type", "switch"));
+		params.add(new BasicNameValuePair("data_typer", "ip"));
+		params.add(new BasicNameValuePair("data_value", ipAddress));
+		return executeIdRequest(params);
+
 	}
 }

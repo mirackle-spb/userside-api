@@ -1,4 +1,4 @@
-package pro.consultit.userside.api.items;
+package pro.consultit.userside.api.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,26 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IdArrayResponse {
-	@JsonProperty("Result")
-	private String result;
+public class IdArrayResponse extends DefaultResponse {
 	@JsonProperty("Id")
 	private List<Integer> customerId = new ArrayList<>();
 
 	protected IdArrayResponse() {
+		super();
 	}
 
-	public IdArrayResponse(String result, List<Integer> customerId) {
-		this.result = result;
-		this.customerId = customerId;
-	}
-
-	public String getResult() {
-		return result;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
+	public IdArrayResponse(String result, String error) {
+		super(result, error);
 	}
 
 	public List<Integer> getCustomerId() {

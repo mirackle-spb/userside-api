@@ -1,14 +1,13 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.AdditionalParam;
-import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserSideAdditionalDataApi extends UserSideAddressApi {
 
@@ -20,19 +19,23 @@ public class UserSideAdditionalDataApi extends UserSideAddressApi {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public IndexEncapsulatedResponse<Integer, AdditionalParam> getHouseAdditionalParameterList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=house");
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, AdditionalParam>>() {
-		});
+	public List<AdditionalParam> getHouseAdditionalParameterList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "additional_data"));
+		params.add(new BasicNameValuePair("action", "get_list"));
+		params.add(new BasicNameValuePair("section", "house"));
+		return executeIndexEncapsulatedRequest(AdditionalParam.class, params);
 	}
 
-	public IndexEncapsulatedResponse<Integer, AdditionalParam> getDeviceAdditionalParameterList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=additional_data&action=get_list&section=switch");
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, AdditionalParam>>() {
-		});
+	public List<AdditionalParam> getDeviceAdditionalParameterList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "additional_data"));
+		params.add(new BasicNameValuePair("action", "get_list"));
+		params.add(new BasicNameValuePair("section", "switch"));
+
+		return executeIndexEncapsulatedRequest(AdditionalParam.class, params);
+
 	}
 }

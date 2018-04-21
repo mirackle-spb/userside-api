@@ -1,21 +1,14 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
 import pro.consultit.userside.api.items.address.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserSideAddressApi extends AbstractUserSideClient {
@@ -27,43 +20,24 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public Map<Integer, RegionItem> getRegionList() throws IOException {
+	public List<RegionItem> getRegionList() throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_province"));
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, RegionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, RegionItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(RegionItem.class, params);
+
 	}
 
-	public Map<Integer, RegionDistrictItem> getRegionDistrictList() throws IOException {
+	public List<RegionDistrictItem> getRegionDistrictList() throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_provinsadfce"));
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, RegionDistrictItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, RegionDistrictItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(RegionDistrictItem.class, params);
 	}
 
-	public Map<Integer, CityItem> getCityList(Integer regionId) throws IOException {
+	public List<CityItem> getCityList(Integer regionId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
@@ -71,20 +45,11 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		if (regionId != null) {
 			params.add(new BasicNameValuePair("province_id", regionId.toString()));
 		}
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, CityItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, CityItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(CityItem.class, params);
+
 	}
 
-	public Map<Integer, CityDistrictItem> getCityDistrictList(Integer cityId) throws IOException {
+	public List<CityDistrictItem> getCityDistrictList(Integer cityId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
@@ -92,20 +57,11 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		if (cityId != null) {
 			params.add(new BasicNameValuePair("city_id", cityId.toString()));
 		}
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, CityDistrictItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, CityDistrictItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(CityDistrictItem.class, params);
+
 	}
 
-	public Map<Integer, StreetItem> getStreetList(@NotNull List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException {
+	public List<StreetItem> getStreetList(@NotNull List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
@@ -114,20 +70,11 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
 			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
 		}
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, StreetItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, StreetItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(StreetItem.class, params);
+
 	}
 
-	public Map<Integer, HouseItem> getHouse(List<Integer> cityIdList, List<Integer> cityRegionIdList, List<Integer> streetIdList) throws IOException {
+	public List<HouseItem> getHouse(List<Integer> cityIdList, List<Integer> cityRegionIdList, List<Integer> streetIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
@@ -141,35 +88,17 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		if (streetIdList != null && streetIdList.size() > 0) {
 			params.add(new BasicNameValuePair("street_id", String.join(",", streetIdList.stream().map(Object::toString).collect(Collectors.toList()))));
 		}
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, HouseItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, HouseItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData();
-		} else {
-			return null;
-		}
+
+		return executeIndexEncapsulatedRequest(HouseItem.class, params);
 	}
 
-	public HouseItem getHouse(Integer houseId) throws IOException {
+	public HouseItem getHouse(Integer houseId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_house"));
 		params.add(new BasicNameValuePair("id", String.valueOf(houseId)));
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, HouseItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, HouseItem>>() {
-		});
-		if (result.getResult().equalsIgnoreCase("OK") || result.getData().size() > 0) {
-			return result.getData().get(houseId);
-		} else {
-			return null;
-		}
+		List<HouseItem> result = executeIndexEncapsulatedRequest(HouseItem.class, params);
+		return result.stream().findFirst().orElse(null);
 	}
 }

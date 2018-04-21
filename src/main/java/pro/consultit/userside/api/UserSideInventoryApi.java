@@ -1,21 +1,15 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.EncoderException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import pro.consultit.userside.api.items.*;
+import pro.consultit.userside.api.items.InventoryCatalogItem;
+import pro.consultit.userside.api.items.InventoryCatalogSectionItem;
+import pro.consultit.userside.api.items.InventoryListItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserSideInventoryApi extends AbstractUserSideClient {
 	public UserSideInventoryApi(ObjectMapper objectMapper, String url, String key) {
@@ -32,19 +26,15 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	 * @param name Item name to find
 	 * @return id of US category or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
-	public Integer getCatalogId(String name) throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_catalog_id_by_name&name=" + urlCodec.encode(name));
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+	public Integer getCatalogId(String name) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory_catalog_id_by_name"));
+		params.add(new BasicNameValuePair("name", name));
+		return executeIdRequest(params);
 	}
 
 	/**
@@ -52,19 +42,14 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	 *
 	 * @return id of US category or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
-	public Map<Integer, InventoryCatalogItem> getInventoryCatalogList() throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_catalog");
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, InventoryCatalogItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, InventoryCatalogItem>>() {
-		});
-		if (result.getResult() != null && result.getResult().equals("OK")) {
-			return result.getData();
-		} else {
-			return null;
-		}
+	public List<InventoryCatalogItem> getInventoryCatalogList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory_catalog"));
+		return executeIndexEncapsulatedRequest(InventoryCatalogItem.class, params);
 	}
 
 	/**
@@ -72,19 +57,15 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	 *
 	 * @return id of US category or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
-	public Map<Integer, InventoryCatalogSectionItem> getInventoryCatalogSectionList() throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_section_catalog");
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, InventoryCatalogSectionItem> result = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, InventoryCatalogSectionItem>>() {
-		});
-		if (result.getResult() != null && result.getResult().equals("OK")) {
-			return result.getData();
-		} else {
-			return null;
-		}
+	public List<InventoryCatalogSectionItem> getInventoryCatalogSectionList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory_section_catalog"));
+		return executeIndexEncapsulatedRequest(InventoryCatalogSectionItem.class, params);
+
 	}
 
 	/**
@@ -93,20 +74,17 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	 * @param assetNumber asset number
 	 * @return id of inventory item or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
 
-	public Integer getInventoryId(String assetNumber) throws IOException, EncoderException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory_id&data_typer=inventory_number&data_value=" + urlCodec.encode(assetNumber));
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<HashMap<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+	public Integer getInventoryId(String assetNumber) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory_id"));
+		params.add(new BasicNameValuePair("data_typer", "inventory_number"));
+		params.add(new BasicNameValuePair("data_value", assetNumber));
+		return executeIdRequest(params);
 	}
 
 	/**
@@ -115,18 +93,19 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	 * @param inventoryId inventoryId
 	 * @return id of inventory item or null if not found
 	 * @throws IOException
-	 * @throws EncoderException
+	 * @throws UserSideApiErrorException
 	 */
 
-	public EncapsulatedResponse<InventoryListItem> getInventoryById(int inventoryId) throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=inventory&action=get_inventory&id=" + inventoryId);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<InventoryListItem>>() {
-		});
+	public InventoryListItem getInventoryById(int inventoryId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory"));
+		params.add(new BasicNameValuePair("id", String.valueOf(inventoryId)));
+		return executeEncapsulatedRequest(InventoryListItem.class, params);
 	}
 
-	public Integer addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException {
+	public Integer addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "inventory"));
@@ -138,41 +117,16 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("storage_id", String.valueOf(storageId)));
 		params.add(new BasicNameValuePair("sn", serial));
 		params.add(new BasicNameValuePair("inventory_number", assetNumber));
-
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<Map<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
-	public Integer inventoryTransfer(int inventoryId, String dstAccount) throws IOException {
-
+	public Integer inventoryTransfer(int inventoryId, String dstAccount) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
-
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "inventory"));
 		params.add(new BasicNameValuePair("action", "transfer_inventory"));
 		params.add(new BasicNameValuePair("inventory_id", String.valueOf(inventoryId)));
 		params.add(new BasicNameValuePair("dst_account", String.valueOf(dstAccount)));
-
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		Map<String, String> result = objectMapper.readValue(entity.getContent(), new TypeReference<Map<String, String>>() {
-		});
-		if (result.get("Result") != null && result.get("Result").equals("OK")) {
-			return Integer.parseInt(result.get("id"));
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 }

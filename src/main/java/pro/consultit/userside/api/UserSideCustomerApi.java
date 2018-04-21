@@ -1,24 +1,12 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import pro.consultit.userside.api.items.EncapsulatedResponse;
-import pro.consultit.userside.api.items.IdArrayResponse;
-import pro.consultit.userside.api.items.IdResponse;
 import pro.consultit.userside.api.items.customer.CustomerData;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,30 +20,17 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public Integer getCustomerByBillingId(int billingId) throws IOException {
-
+	public Integer getCustomerByBillingId(int billingId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "customer"));
 		params.add(new BasicNameValuePair("subcat", "get_abon_id"));
 		params.add(new BasicNameValuePair("data_typer", "billing_uid"));
 		params.add(new BasicNameValuePair("data_value", String.valueOf(billingId)));
-
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
-	public List<Integer> getCustomerByPhone(String customerPhone, boolean skipArchive) throws IOException {
+	public List<Integer> getCustomerByPhone(String customerPhone, boolean skipArchive) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
@@ -68,22 +43,10 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 		} else {
 			params.add(new BasicNameValuePair("is_skip_old", "0"));
 		}
-
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IdArrayResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdArrayResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getCustomerId().size() > 0) {
-			return result.getCustomerId();
-		} else {
-			return null;
-		}
+		return executeIdArrayRequest(params);
 	}
 
-	public CustomerData getCustomerData(int customerId) throws IOException {
+	public CustomerData getCustomerData(int customerId) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
@@ -91,22 +54,10 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("subcat", "get_data"));
 		params.add(new BasicNameValuePair("customer_id", Integer.toString(customerId)));
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-
-		EncapsulatedResponse<CustomerData> result = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<CustomerData>>() {
-		});
-		if (result.getResult().equals("OK") && result.getData() != null) {
-			return result.getData();
-		} else {
-			return null;
-		}
+		return executeEncapsulatedRequest(CustomerData.class, params);
 	}
 
-	public Integer addClient(@NotNull String clientFullname, Integer clientBillingId, Integer billingId, Boolean isPotential) throws IOException {
+	public Integer addClient(@NotNull String clientFullname, Integer clientBillingId, Integer billingId, Boolean isPotential) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -121,26 +72,14 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 		if (isPotential != null) {
 			params.add(new BasicNameValuePair("is_potential", isPotential ? "1" : "0"));
 		}
-
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
 	public boolean editClient(@NotNull Integer clientId, String clientFullname,
 	                          String agreementNumber, Date agreementDate,
 	                          Integer apartmentNumber, String email,
 	                          Integer floor, Integer houseId, String login,
-	                          String phone0, String phone1, Boolean isPotential) throws IOException {
+	                          String phone0, String phone1, Boolean isPotential) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -179,13 +118,7 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 		if (isPotential != null) {
 			params.add(new BasicNameValuePair("is_potential", isPotential ? "1" : "0"));
 		}
-
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-		HttpEntity entity = response.getEntity();
-		String responseBody = IOUtils.toString(entity.getContent(), "UTF-8");
-		return response.getStatusLine().getStatusCode() == 200;
+		return executeBooleanRequest(params);
 	}
 
 }

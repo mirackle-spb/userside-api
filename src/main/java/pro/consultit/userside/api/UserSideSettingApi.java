@@ -1,16 +1,14 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.EncoderException;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import pro.consultit.userside.api.items.ActionResponse;
-import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.SystemMarkItem;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserSideSettingApi extends AbstractUserSideClient {
 	public UserSideSettingApi(ObjectMapper objectMapper, String url, String key) {
@@ -21,23 +19,24 @@ public class UserSideSettingApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public IndexEncapsulatedResponse<Integer, SystemMarkItem> getSystemMarkList() throws IOException {
-		HttpGet httpget = new HttpGet(url + "?key=" + key + "&cat=setting&action=mark_show");
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, SystemMarkItem>>() {
-		});
+	public List<SystemMarkItem> getSystemMarkList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "setting"));
+		params.add(new BasicNameValuePair("action", "mark_show"));
+		return executeIndexEncapsulatedRequest(SystemMarkItem.class, params);
 	}
 
-	public ActionResponse<Integer> addSystemMark(String name, String[] type_array) throws IOException, EncoderException {
-		StringBuilder getString = new StringBuilder(url + "?key=" + key + "&cat=setting&action=mark_add&name=" + urlCodec.encode(name));
+	public Integer addSystemMark(@NotNull String name, String[] type_array) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "setting"));
+		params.add(new BasicNameValuePair("action", "mark_add"));
+
 		for (String type : type_array) {
-			getString.append("&type_array[]=").append(urlCodec.encode(type));
+			params.add(new BasicNameValuePair("type_array[]", type));
 		}
-		HttpGet httpget = new HttpGet(getString.toString());
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		return objectMapper.readValue(entity.getContent(), new TypeReference<ActionResponse<Integer>>() {
-		});
+		return executeIdRequest(params);
+
 	}
 }

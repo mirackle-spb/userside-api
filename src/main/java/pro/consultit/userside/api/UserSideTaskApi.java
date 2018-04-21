@@ -1,25 +1,14 @@
 package pro.consultit.userside.api;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import pro.consultit.userside.api.items.EncapsulatedResponse;
-import pro.consultit.userside.api.items.IdResponse;
-import pro.consultit.userside.api.items.IndexEncapsulatedResponse;
 import pro.consultit.userside.api.items.TaskItem;
 import pro.consultit.userside.api.items.task.TaskCatalogState;
 import pro.consultit.userside.api.items.task.TaskCatalogType;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,7 +23,7 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
-	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @NotNull Integer customerId, String description) throws IOException {
+	public Integer addCustomerTask(int taskType, @NotNull Date dateToDo, @NotNull Integer customerId, String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -52,22 +41,11 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 			params.add(new BasicNameValuePair("opis", description));
 		}
 
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
 	@Deprecated
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, Integer houseCodeId, String description) throws IOException {
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, Integer houseCodeId, String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -85,21 +63,10 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 			params.add(new BasicNameValuePair("opis", description));
 		}
 
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, String clientFullname, Integer cityCodeId, Integer houseCodeId, Integer apartmentNumber, String description) throws IOException {
+	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, String clientFullname, Integer cityCodeId, Integer houseCodeId, Integer apartmentNumber, String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -126,22 +93,11 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 			params.add(new BasicNameValuePair("opis", description));
 		}
 
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
 
-	public Integer addTaskComment(int taskId, String description) throws IOException {
+	public Integer addTaskComment(int taskId, String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -153,24 +109,11 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 			params.add(new BasicNameValuePair("comment", description));
 		}
 
-		HttpPost httpPost = new HttpPost(url);
-		httpPost.setEntity(new UrlEncodedFormEntity(params, Charset.forName("UTF-8")));
-		HttpResponse response = httpclient.execute(httpPost);
-
-		HttpEntity entity = response.getEntity();
-		IdResponse result = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (result.getResult().equals("OK") && result.getResultId() != null) {
-			return result.getResultId();
-		} else {
-			return null;
-		}
+		return executeIdRequest(params);
 	}
 
 
 	public boolean checkTaskVerifyCode(int taskId, String code) throws IOException, UserSideApiErrorException {
-		HttpEntity entity = null;
-		IdResponse incResponse = null;
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "task"));
@@ -178,20 +121,7 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("id", String.valueOf(taskId)));
 		params.add(new BasicNameValuePair("verify_code", code));
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-		HttpResponse response = httpclient.execute(httpget);
-		entity = response.getEntity();
-		incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IdResponse>() {
-		});
-		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK")) {
-			return true;
-		}
-		if (incResponse.getError() != null) {
-			throw new UserSideApiErrorException(incResponse.getError());
-		} else {
-			return false;
-		}
+		return executeBooleanRequest(params);
 	}
 
 	public TaskItem getTask(int taskId) throws IOException, UserSideApiErrorException {
@@ -201,22 +131,7 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("action", "show"));
 		params.add(new BasicNameValuePair("id", String.valueOf(taskId)));
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		EncapsulatedResponse<TaskItem> incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<EncapsulatedResponse<TaskItem>>() {
-		});
-
-		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
-			return incResponse.getData();
-		}
-		if (incResponse.getError() != null) {
-			throw new UserSideApiErrorException(incResponse.getError());
-		} else {
-			return null;
-		}
+		return executeEncapsulatedRequest(TaskItem.class, params);
 	}
 
 	public List<TaskCatalogType> getTaskCatalogType(Integer type_id) throws IOException, UserSideApiErrorException {
@@ -225,26 +140,12 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("cat", "task"));
 		params.add(new BasicNameValuePair("action", "get_catalog_type"));
 		if (type_id != null) {
-			params.add(new BasicNameValuePair("type_id", String.valueOf(type_id)));
+			params.add(new BasicNameValuePair("id", String.valueOf(type_id)));
 		}
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
-
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, TaskCatalogType> incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, TaskCatalogType>>() {
-		});
-
-		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
-			return new ArrayList<>(incResponse.getData().values());
-		}
-		if (incResponse.getError() != null) {
-			throw new UserSideApiErrorException(incResponse.getError());
-		} else {
-			return null;
-		}
+		return executeIndexEncapsulatedRequest(TaskCatalogType.class, params);
 	}
+
 
 	public List<TaskCatalogState> getTaskCatalogState(Integer state_id) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
@@ -252,24 +153,24 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("cat", "task"));
 		params.add(new BasicNameValuePair("action", "get_catalog_state"));
 		if (state_id != null) {
-			params.add(new BasicNameValuePair("state_id", String.valueOf(state_id)));
+			params.add(new BasicNameValuePair("id", String.valueOf(state_id)));
 		}
 
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		HttpGet httpget = new HttpGet(url + "?" + paramString);
+		return executeIndexEncapsulatedRequest(TaskCatalogState.class, params);
+	}
 
-		HttpResponse response = httpclient.execute(httpget);
-		HttpEntity entity = response.getEntity();
-		IndexEncapsulatedResponse<Integer, TaskCatalogState> incResponse = objectMapper.readValue(entity.getContent(), new TypeReference<IndexEncapsulatedResponse<Integer, TaskCatalogState>>() {
-		});
+	public boolean changeTaskState(@NotNull Integer id, @NotNull Integer state_id, Integer operator_id) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "task"));
+		params.add(new BasicNameValuePair("action", "change_state"));
+		params.add(new BasicNameValuePair("id", String.valueOf(id)));
+		params.add(new BasicNameValuePair("state_id", String.valueOf(state_id)));
 
-		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
-			return new ArrayList<>(incResponse.getData().values());
+		if (operator_id != null) {
+			params.add(new BasicNameValuePair("operator_id", String.valueOf(operator_id)));
 		}
-		if (incResponse.getError() != null) {
-			throw new UserSideApiErrorException(incResponse.getError());
-		} else {
-			return null;
-		}
+
+		return executeBooleanRequest(params);
 	}
 }
