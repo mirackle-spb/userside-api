@@ -9,7 +9,7 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskItem {
-	@JsonProperty("todo")
+	@JsonProperty("id")
 	private int id;
 	@JsonProperty("parentTaskId")
 	private Integer parentTaskId;
