@@ -2,6 +2,7 @@ package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -167,16 +168,16 @@ public abstract class AbstractUserSideClient {
 			entity.getContent().close();
 			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
 		}
+		String resultContent = IOUtils.toString(entity.getContent(), "utf-8");
+		IdResponse idResponse = objectMapper.readValue(resultContent, objectMapper.getTypeFactory().constructType(IdResponse.class));
 
-		IdResponse idResponse = objectMapper.readValue(entity.getContent(), objectMapper.getTypeFactory().constructType(IdResponse.class));
-
-		if (idResponse.getResult() != null && idResponse.getResult().equalsIgnoreCase("OK")) {
+		if (idResponse.getResult() != null && idResponse.getResult().equalsIgnoreCase("OK") && idResponse.getResultId() != null) {
 			return idResponse.getResultId();
 		}
 		if (idResponse.getError() != null) {
 			throw new UserSideApiErrorException(idResponse.getError());
 		} else {
-			return null;
+			throw new UserSideApiErrorException("Userside returned NULL id value. Content:" + resultContent);
 		}
 	}
 

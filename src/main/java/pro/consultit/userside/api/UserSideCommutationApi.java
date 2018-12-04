@@ -86,7 +86,7 @@ public class UserSideCommutationApi extends AbstractUserSideClient {
 			}
 		}
 		EncapsulatedResponse<Map<Integer, CommutationListItem[]>> methodResponse = new EncapsulatedResponse<>(usResponse.getResult(), usResponse.getError());
-		methodResponse.getData().putAll(resultMap);
+		methodResponse.setData(resultMap);
 		return methodResponse;
 	}
 
