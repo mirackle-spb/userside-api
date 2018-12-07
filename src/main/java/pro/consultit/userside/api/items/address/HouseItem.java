@@ -12,17 +12,17 @@ import java.util.Map;
 public class HouseItem {
 
 
-	private int id;
+	private Integer id;
 	@JsonProperty("city_district_id")
 	private Integer districtId;
 	@JsonProperty("city_id")
-	private int cityId;
+	private Integer cityId;
 	@JsonProperty("province_id")
-	private int regionId;
+	private Integer regionId;
 	@JsonProperty("district_id")
-	private int regionDistrictId;
+	private Integer regionDistrictId;
 	@JsonProperty("street_id")
-	private int streetId;
+	private Integer streetId;
 	@JsonProperty("number")
 	private Integer number;
 	@JsonProperty("custom_name")
@@ -32,13 +32,13 @@ public class HouseItem {
 	@JsonProperty("additional_data")
 	private Map<Integer, String> params = new HashMap();
 	@JsonProperty("floor")
-	private int floorCount;
+	private Integer floorCount;
 	@JsonProperty("entrance")
-	private int entranceCount;
+	private Integer entranceCount;
 	@JsonProperty("full_name")
 	private String fullName;
 	@JsonProperty("street2_id")
-	private int street2Id;
+	private Integer street2Id;
 	@JsonProperty("coordinates")
 	private List<Double[]> coordinatesList = new ArrayList<>();
 	private Integer number2;
@@ -47,7 +47,8 @@ public class HouseItem {
 	protected HouseItem() {
 	}
 
-	public HouseItem(int id, Integer districtId, int cityId, int regionId, int regionDistrictId, int streetId, Integer number, String block, Map<Integer, String> params, int floorCount, int entranceCount, String fullName, int street2Id, Integer number2, String block2) {
+	public HouseItem(Integer id, Integer districtId, Integer cityId, Integer regionId, Integer regionDistrictId, Integer streetId, Integer number, String block,
+	                 Map<Integer, String> params, Integer floorCount, Integer entranceCount, String fullName, Integer street2Id, Integer number2, String block2) {
 		this.id = id;
 		this.districtId = districtId;
 		this.cityId = cityId;
@@ -65,11 +66,11 @@ public class HouseItem {
 		this.block2 = block2;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public HouseItem setId(int id) {
+	public HouseItem setId(Integer id) {
 		this.id = id;
 		return this;
 	}
@@ -83,38 +84,38 @@ public class HouseItem {
 		return this;
 	}
 
-	public int getCityId() {
+	public Integer getCityId() {
 		return cityId;
 	}
 
-	public HouseItem setCityId(int cityId) {
+	public HouseItem setCityId(Integer cityId) {
 		this.cityId = cityId;
 		return this;
 	}
 
-	public int getRegionId() {
+	public Integer getRegionId() {
 		return regionId;
 	}
 
-	public HouseItem setRegionId(int regionId) {
+	public HouseItem setRegionId(Integer regionId) {
 		this.regionId = regionId;
 		return this;
 	}
 
-	public int getRegionDistrictId() {
+	public Integer getRegionDistrictId() {
 		return regionDistrictId;
 	}
 
-	public HouseItem setRegionDistrictId(int regionDistrictId) {
+	public HouseItem setRegionDistrictId(Integer regionDistrictId) {
 		this.regionDistrictId = regionDistrictId;
 		return this;
 	}
 
-	public int getStreetId() {
+	public Integer getStreetId() {
 		return streetId;
 	}
 
-	public HouseItem setStreetId(int streetId) {
+	public HouseItem setStreetId(Integer streetId) {
 		this.streetId = streetId;
 		return this;
 	}
@@ -146,11 +147,11 @@ public class HouseItem {
 		return this;
 	}
 
-	public int getFloorCount() {
+	public Integer getFloorCount() {
 		return floorCount;
 	}
 
-	public HouseItem setFloorCount(int floorCount) {
+	public HouseItem setFloorCount(Integer floorCount) {
 		this.floorCount = floorCount;
 		return this;
 	}
@@ -163,11 +164,11 @@ public class HouseItem {
 		this.customName = customName;
 	}
 
-	public int getEntranceCount() {
+	public Integer getEntranceCount() {
 		return entranceCount;
 	}
 
-	public HouseItem setEntranceCount(int entranceCount) {
+	public HouseItem setEntranceCount(Integer entranceCount) {
 		this.entranceCount = entranceCount;
 		return this;
 	}
@@ -181,11 +182,11 @@ public class HouseItem {
 		return this;
 	}
 
-	public int getStreet2Id() {
+	public Integer getStreet2Id() {
 		return street2Id;
 	}
 
-	public HouseItem setStreet2Id(int street2Id) {
+	public HouseItem setStreet2Id(Integer street2Id) {
 		this.street2Id = street2Id;
 		return this;
 	}
