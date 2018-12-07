@@ -23,7 +23,11 @@ public class HouseItem {
 	private int regionDistrictId;
 	@JsonProperty("street_id")
 	private int streetId;
+	@JsonProperty("number")
 	private Integer number;
+	@JsonProperty("custom_name")
+	private String customName;
+	@JsonProperty("number")
 	private String block;
 	@JsonProperty("additional_data")
 	private Map<Integer, String> params = new HashMap();
@@ -149,6 +153,14 @@ public class HouseItem {
 	public HouseItem setFloorCount(int floorCount) {
 		this.floorCount = floorCount;
 		return this;
+	}
+
+	public String getCustomName() {
+		return customName;
+	}
+
+	public void setCustomName(final String customName) {
+		this.customName = customName;
 	}
 
 	public int getEntranceCount() {
