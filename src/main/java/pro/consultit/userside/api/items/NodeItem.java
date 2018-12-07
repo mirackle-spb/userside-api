@@ -32,6 +32,8 @@ public class NodeItem {
 	private Integer number;
 	@JsonProperty("additional_data")
 	private Map<Integer, String> params = new HashMap();
+	@JsonProperty("mark")
+	private Map<Integer, String> marks = new HashMap();
 	@JsonProperty("coordinates")
 	private Coordinates coordinates;
 
@@ -159,5 +161,13 @@ public class NodeItem {
 
 	public void setCoordinates(final Coordinates coordinates) {
 		this.coordinates = coordinates;
+	}
+
+	public Map<Integer, String> getMarks() {
+		return marks;
+	}
+
+	public void setMarks(final Map<Integer, String> marks) {
+		this.marks = marks;
 	}
 }
