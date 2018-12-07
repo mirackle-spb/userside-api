@@ -16,6 +16,7 @@ import pro.consultit.userside.api.response.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractUserSideClient {
@@ -76,7 +77,7 @@ public abstract class AbstractUserSideClient {
 		if (incResponse.getError() != null) {
 			throw new UserSideApiErrorException(incResponse.getError());
 		} else {
-			return null;
+			return Collections.emptyList();
 		}
 	}
 
