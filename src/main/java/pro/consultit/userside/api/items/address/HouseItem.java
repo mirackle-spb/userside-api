@@ -27,7 +27,7 @@ public class HouseItem {
 	private Integer number;
 	@JsonProperty("custom_name")
 	private String customName;
-	@JsonProperty("number")
+	@JsonProperty("block")
 	private String block;
 	@JsonProperty("additional_data")
 	private Map<Integer, String> params = new HashMap();
