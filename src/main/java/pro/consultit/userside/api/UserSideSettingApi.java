@@ -32,7 +32,7 @@ public class UserSideSettingApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "setting"));
 		params.add(new BasicNameValuePair("action", "mark_add"));
-
+		params.add(new BasicNameValuePair("name", name));
 		for (String type : type_array) {
 			params.add(new BasicNameValuePair("type_array[]", type));
 		}
