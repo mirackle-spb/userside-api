@@ -1,7 +1,6 @@
 package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.istack.internal.Nullable;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.address.*;
@@ -61,7 +60,7 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 
 	}
 
-	public List<StreetItem> getStreetList(@Nullable List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
+	public List<StreetItem> getStreetList(List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
