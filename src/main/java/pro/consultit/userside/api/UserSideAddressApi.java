@@ -67,10 +67,10 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_street"));
 		if (cityIdList != null) {
-			params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+			params.add(new BasicNameValuePair("city_id", cityIdList.stream().map(Object::toString).collect(Collectors.joining(","))));
 		}
 		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
-			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+			params.add(new BasicNameValuePair("area_id", cityRegionIdList.stream().map(Object::toString).collect(Collectors.joining(","))));
 		}
 		return executeIndexEncapsulatedRequest(StreetItem.class, params);
 
