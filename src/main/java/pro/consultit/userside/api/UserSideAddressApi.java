@@ -1,11 +1,11 @@
 package pro.consultit.userside.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.istack.internal.Nullable;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.address.*;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +61,14 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 
 	}
 
-	public List<StreetItem> getStreetList(@NotNull List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
+	public List<StreetItem> getStreetList(@Nullable List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_street"));
-		params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		if (cityIdList != null) {
+			params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+		}
 		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
 			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
 		}
