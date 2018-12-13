@@ -1,8 +1,22 @@
 package pro.consultit.userside.api.items;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdditionalParam {
+	@JsonProperty("id")
 	private int id;
+
+	@JsonProperty("name")
 	private String name;
+
+	@JsonProperty("type")
+	private String type;
+
+	@JsonProperty("available_value")
+	private List<String> availableValues = new ArrayList<>();
 
 	protected AdditionalParam() {
 	}
@@ -26,5 +40,21 @@ public class AdditionalParam {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(final String type) {
+		this.type = type;
+	}
+
+	public List<String> getAvailableValues() {
+		return availableValues;
+	}
+
+	public void setAvailableValues(final List<String> availableValues) {
+		this.availableValues = availableValues;
 	}
 }
