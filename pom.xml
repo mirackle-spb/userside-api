@@ -6,7 +6,7 @@
 
 	<groupId>pro.consultit</groupId>
 	<artifactId>userside</artifactId>
-	<version>3.12.34</version>
+	<version>3.12.35</version>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
