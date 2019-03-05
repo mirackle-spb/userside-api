@@ -49,7 +49,7 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 	}
 
 	@Deprecated
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, Integer houseCodeId, String description) throws IOException, UserSideApiErrorException {
+	public Integer addTask(int taskType, @NotNull Date dateToDo, Integer houseCodeId, String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -70,8 +70,8 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		return executeIdRequest(params);
 	}
 
-	public Integer addHouseTask(int taskType, @NotNull Date dateToDo, String clientFullname, Integer cityCodeId, Integer houseCodeId, Integer apartmentNumber,
-	                            String description) throws IOException, UserSideApiErrorException {
+	public Integer addTask(int taskType, @NotNull Date dateToDo, String clientFullname, Integer nodeId, Integer cityCodeId, Integer houseCodeId, Integer apartmentNumber,
+	                       String description) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
 
@@ -87,6 +87,9 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		}
 		if (houseCodeId != null) {
 			params.add(new BasicNameValuePair("housecode", String.valueOf(houseCodeId)));
+		}
+		if (nodeId != null) {
+			params.add(new BasicNameValuePair("uzelcode", String.valueOf(nodeId)));
 		}
 		if (apartmentNumber != null) {
 			params.add(new BasicNameValuePair("apart", String.valueOf(apartmentNumber)));
