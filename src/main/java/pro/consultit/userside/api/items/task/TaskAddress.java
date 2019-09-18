@@ -10,14 +10,14 @@ public class TaskAddress {
 	@JsonProperty("houseId")
 	private Integer houseId;
 	@JsonProperty("apartament")
-	private Integer apartament;
+	private String apartament;
 	@JsonProperty("text")
 	private String text;
 
 	protected TaskAddress() {
 	}
 
-	public TaskAddress(int cityId, int houseId, int apartament, String text) {
+	public TaskAddress(int cityId, int houseId, String apartament, String text) {
 		this.cityId = cityId;
 		this.houseId = houseId;
 		this.apartament = apartament;
@@ -42,11 +42,11 @@ public class TaskAddress {
 		return this;
 	}
 
-	public int getApartament() {
+	public String getApartament() {
 		return apartament;
 	}
 
-	public TaskAddress setApartament(int apartament) {
+	public TaskAddress setApartament(String apartament) {
 		this.apartament = apartament;
 		return this;
 	}
