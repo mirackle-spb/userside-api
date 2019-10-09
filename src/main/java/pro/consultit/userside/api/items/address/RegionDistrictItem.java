@@ -1,41 +1,25 @@
 package pro.consultit.userside.api.items.address;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
-/**
- * Created by kuzmich on 18.04.16.
- */
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RegionDistrictItem {
-
 	@JsonProperty("id")
 	private int id;
 	@JsonProperty("name")
 	private String name;
-
-
-	protected RegionDistrictItem() {
-	}
-
-	public RegionDistrictItem(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public RegionDistrictItem setId(int id) {
-		this.id = id;
-		return this;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public RegionDistrictItem setName(String name) {
-		this.name = name;
-		return this;
-	}
+	@JsonProperty("parent_id")
+	private Integer parentId;
+	@JsonProperty("parent_ids")
+	private List<Integer> parentIds;
 }

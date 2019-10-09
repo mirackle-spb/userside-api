@@ -20,6 +20,16 @@ public class UserSideNodeApi extends AbstractUserSideClient {
 		super(objectMapper, url, key, timeout);
 	}
 
+	public NodeItem get(@NotNull Integer nodeId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "node"));
+		params.add(new BasicNameValuePair("action", "get"));
+		params.add(new BasicNameValuePair("id", nodeId.toString()));
+
+		return executeIndexEncapsulatedRequest(NodeItem.class, params).stream().findFirst().orElse(null);
+	}
+
 	public List<NodeItem> get(@NotNull List<Integer> nodeList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));

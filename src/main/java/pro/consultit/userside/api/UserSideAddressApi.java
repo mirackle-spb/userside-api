@@ -32,7 +32,7 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
-		params.add(new BasicNameValuePair("action", "get_provinsadfce"));
+		params.add(new BasicNameValuePair("action", "get_district"));
 		return executeIndexEncapsulatedRequest(RegionDistrictItem.class, params);
 	}
 
