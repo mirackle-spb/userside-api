@@ -117,14 +117,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 			<id>central</id>
-			<name>plugins-release</name>
-			<url>http://m2.consult-it.pro/artifactory/plugins-release</url>
+			<name>libs-release</name>
+			<url>http://m2.consult-it.pro/artifactory/libs-release</url>
 		</pluginRepository>
 		<pluginRepository>
 			<snapshots/>
 			<id>snapshots</id>
-			<name>plugins-snapshot</name>
-			<url>http://m2.consult-it.pro/artifactory/plugins-snapshot</url>
+			<name>libs-snapshot</name>
+			<url>http://m2.consult-it.pro/artifactory/libs-snapshot</url>
 		</pluginRepository>
 	</pluginRepositories>
 
