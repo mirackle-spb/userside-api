@@ -16,7 +16,15 @@ import java.util.Map;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HouseItem extends AddressItem {
+public class HouseItem {
+	@JsonProperty("id")
+	private int id;
+	@JsonProperty("name")
+	private String name;
+	@JsonProperty("parent_id")
+	private Integer parentId;
+	@JsonProperty("parent_ids")
+	private List<Integer> parentIds;
 	@JsonProperty("building_id")
 	private Integer buildingId;
 	@JsonProperty("floor")
