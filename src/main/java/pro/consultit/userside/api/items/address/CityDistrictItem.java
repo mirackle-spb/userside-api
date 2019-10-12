@@ -2,10 +2,7 @@ package pro.consultit.userside.api.items.address;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -13,14 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CityDistrictItem {
-	@JsonProperty("id")
-	private int id;
-	@JsonProperty("name")
-	private String name;
-	@JsonProperty("parent_id")
-	private Integer parentId;
-	@JsonProperty("parent_ids")
-	private List<Integer> parentIds;
+public class CityDistrictItem extends AddressItem {
+
 
 }
