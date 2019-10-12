@@ -18,7 +18,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HouseItem {
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("parent_id")

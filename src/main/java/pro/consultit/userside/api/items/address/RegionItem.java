@@ -15,7 +15,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RegionItem {
 	@JsonProperty("id")
-	private int id;
+	private Integer id;
 	@JsonProperty("name")
 	private String name;
 	@JsonProperty("parent_id")
