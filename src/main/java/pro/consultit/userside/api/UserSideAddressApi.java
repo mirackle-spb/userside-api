@@ -60,6 +60,18 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 
 	}
 
+	public StreetItem getStreet(Integer streetId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_street"));
+		if (streetId != null) {
+			params.add(new BasicNameValuePair("id", streetId.toString()));
+		}
+		return executeIndexEncapsulatedRequest(StreetItem.class, params).stream().findFirst().orElse(null);
+
+	}
+
 	public List<StreetItem> getStreetList(List<Integer> cityIdList, List<Integer> cityRegionIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
