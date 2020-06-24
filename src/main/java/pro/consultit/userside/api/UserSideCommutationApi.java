@@ -99,7 +99,7 @@ public class UserSideCommutationApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("object_id", String.valueOf(customerId)));
 		params.add(new BasicNameValuePair("is_finish_data", "1"));
 
-		return executeArrayRequest(CommutationListItem.class, params);
+		return executeIndexEncapsulatedRequest(CommutationListItem.class, params);
 
 	}
 
