@@ -15,6 +15,7 @@ import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.response.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,31 @@ public abstract class AbstractUserSideClient {
 		}
 
 		JavaType type = objectMapper.getTypeFactory().constructParametricType(IndexEncapsulatedResponse.class, Integer.class, returnClass);
+		IndexEncapsulatedResponse<Integer, T> incResponse = objectMapper.readValue(entity.getContent(), type);
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
+			return new ArrayList<>(incResponse.getData().values());
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			return Collections.emptyList();
+		}
+	}
+
+	protected <T> List<T> executeStringIndexEncapsulatedRequest(Class<T> returnClass, List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructParametricType(IndexEncapsulatedResponse.class, String.class, returnClass);
 		IndexEncapsulatedResponse<Integer, T> incResponse = objectMapper.readValue(entity.getContent(), type);
 
 		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK") && incResponse.getData() != null) {
@@ -169,7 +195,7 @@ public abstract class AbstractUserSideClient {
 			entity.getContent().close();
 			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
 		}
-		String resultContent = IOUtils.toString(entity.getContent(), "utf-8");
+		String resultContent = IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
 		IdResponse idResponse = objectMapper.readValue(resultContent, objectMapper.getTypeFactory().constructType(IdResponse.class));
 
 		if (idResponse.getResult() != null && idResponse.getResult().equalsIgnoreCase("OK") && idResponse.getResultId() != null) {
