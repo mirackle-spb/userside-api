@@ -5,10 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskAddress {
-	@JsonProperty("cityId")
-	private Integer cityId;
-	@JsonProperty("houseId")
-	private Integer houseId;
+	@JsonProperty("addressId")
+	private Integer addressId;
 	@JsonProperty("apartament")
 	private String apartament;
 	@JsonProperty("text")
@@ -17,28 +15,19 @@ public class TaskAddress {
 	protected TaskAddress() {
 	}
 
-	public TaskAddress(int cityId, int houseId, String apartament, String text) {
-		this.cityId = cityId;
-		this.houseId = houseId;
+	public TaskAddress(int cityId, int addressId, String apartament, String text) {
+		this.addressId = addressId;
 		this.apartament = apartament;
 		this.text = text;
 	}
 
-	public int getCityId() {
-		return cityId;
+
+	public int getAddressId() {
+		return addressId;
 	}
 
-	public TaskAddress setCityId(int cityId) {
-		this.cityId = cityId;
-		return this;
-	}
-
-	public int getHouseId() {
-		return houseId;
-	}
-
-	public TaskAddress setHouseId(int houseId) {
-		this.houseId = houseId;
+	public TaskAddress setAddressId(int addressId) {
+		this.addressId = addressId;
 		return this;
 	}
 
