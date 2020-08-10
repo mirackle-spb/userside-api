@@ -1,4 +1,4 @@
-package pro.consultit.userside.api.items.task;
+package pro.consultit.userside.api.items;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,12 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TaskState {
+public class TaskCatalogStatus {
 	@JsonProperty("id")
 	private Integer id;
 	@JsonProperty("name")
 	private String name;
-	@JsonProperty("systemRole")
-	private Integer systemRole;
+	@JsonProperty("sysrole")
+	private Integer sysrole;
 
 }

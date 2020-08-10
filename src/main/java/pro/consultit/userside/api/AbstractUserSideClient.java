@@ -14,6 +14,7 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.response.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -181,6 +182,32 @@ public abstract class AbstractUserSideClient {
 			throw new UserSideApiErrorException(incResponse.getError());
 		} else {
 			return null;
+		}
+	}
+
+	@NotNull
+	protected List<Integer> executeListRequest(List<NameValuePair> parameters) throws IOException, UserSideApiErrorException {
+		String paramString = URLEncodedUtils.format(parameters, "utf-8");
+		HttpGet httpget = new HttpGet(url + "?" + paramString);
+
+		HttpResponse response = httpclient.execute(httpget);
+		HttpEntity entity = response.getEntity();
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			entity.getContent().close();
+			throw new UserSideApiErrorException("Return code of " + paramString + " is not 200!");
+		}
+
+		JavaType type = objectMapper.getTypeFactory().constructType(ListResponse.class);
+		ListResponse incResponse = objectMapper.readValue(entity.getContent(), type);
+
+		if (incResponse.getResult() != null && incResponse.getResult().equalsIgnoreCase("OK")) {
+			return incResponse.getList();
+		}
+		if (incResponse.getError() != null) {
+			throw new UserSideApiErrorException(incResponse.getError());
+		} else {
+			throw new UserSideApiErrorException("Unknown Error");
 		}
 	}
 
