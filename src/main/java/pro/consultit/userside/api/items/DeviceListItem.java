@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import pro.consultit.userside.api.items.device.DeviceInterface;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +52,12 @@ public class DeviceListItem {
 	@JsonSerialize(using = NumericBooleanSerializer.class)
 	@JsonDeserialize(using = NumericBooleanDeserializer.class)
 	private boolean online;
-
-
+	@JsonProperty("ifaces")
+	private Map<Integer, DeviceInterface> interfaceMap = new HashMap<>();
+	@JsonProperty("snmp_proto")
+	private String snmpVersion;
+	@JsonProperty("snmp_community_rw")
+	private String snmpWriteCommunity;
+	@JsonProperty("snmp_community_ro")
+	private String snmpReadCommunity;
 }
