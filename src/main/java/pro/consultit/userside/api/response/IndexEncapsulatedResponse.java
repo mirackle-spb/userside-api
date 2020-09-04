@@ -1,10 +1,10 @@
 package pro.consultit.userside.api.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class IndexEncapsulatedResponse<I, T> extends DefaultResponse {
@@ -24,13 +24,8 @@ public class IndexEncapsulatedResponse<I, T> extends DefaultResponse {
 		return data;
 	}
 
-	public void setData(Object data) {
-		if (data instanceof Map) {
-			this.data = (Map<I, T>) data;
-		} else if (data instanceof List && ((List) data).size() == 0) {
-			this.data = Collections.EMPTY_MAP;
-		} else {
-			throw new IllegalArgumentException("Invalid value: " + data);
-		}
+	@JsonSetter(contentNulls = Nulls.AS_EMPTY, nulls = Nulls.AS_EMPTY)
+	public void setData(Map<I, T> data) {
+		this.data = data;
 	}
 }
