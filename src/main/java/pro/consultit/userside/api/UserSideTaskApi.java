@@ -12,10 +12,7 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UserSideTaskApi extends AbstractUserSideClient {
@@ -176,9 +173,13 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "task"));
 		params.add(new BasicNameValuePair("action", "show"));
-		params.add(new BasicNameValuePair("id", String.join(",", Arrays.stream(taskList).map(Object::toString).collect(Collectors.toSet()))));
 
-		return executeIndexEncapsulatedRequest(TaskItem.class, params);
+		params.add(new BasicNameValuePair("id", String.join(",", Arrays.stream(taskList).map(Object::toString).collect(Collectors.toSet()))));
+		if (taskList.length > 1) {
+			return Collections.singletonList(executeEncapsulatedRequest(TaskItem.class, params));
+		} else {
+			return executeIndexEncapsulatedRequest(TaskItem.class, params);
+		}
 	}
 
 	public List<TaskCatalogType> getTaskCatalogType(Integer type_id) throws IOException, UserSideApiErrorException {
