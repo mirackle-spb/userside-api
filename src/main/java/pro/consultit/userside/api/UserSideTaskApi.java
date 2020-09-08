@@ -176,9 +176,9 @@ public class UserSideTaskApi extends AbstractUserSideClient {
 
 		params.add(new BasicNameValuePair("id", String.join(",", Arrays.stream(taskList).map(Object::toString).collect(Collectors.toSet()))));
 		if (taskList.length > 1) {
-			return Collections.singletonList(executeEncapsulatedRequest(TaskItem.class, params));
-		} else {
 			return executeIndexEncapsulatedRequest(TaskItem.class, params);
+		} else {
+			return Collections.singletonList(executeEncapsulatedRequest(TaskItem.class, params));
 		}
 	}
 
