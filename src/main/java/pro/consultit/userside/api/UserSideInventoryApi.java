@@ -3,6 +3,7 @@ package pro.consultit.userside.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import pro.consultit.userside.api.items.InventoryAmountItem;
 import pro.consultit.userside.api.items.InventoryCatalogItem;
 import pro.consultit.userside.api.items.InventoryCatalogSectionItem;
 import pro.consultit.userside.api.items.InventoryListItem;
@@ -88,6 +89,25 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 	}
 
 	/**
+	 * Looking for item inventory id by customer
+	 *
+	 * @param customerId customerId
+	 * @return id of inventory item or null if not found
+	 * @throws IOException
+	 * @throws UserSideApiErrorException
+	 */
+
+	public List<InventoryAmountItem> getInventoryAmount(Integer customerId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "inventory"));
+		params.add(new BasicNameValuePair("action", "get_inventory_amount"));
+		params.add(new BasicNameValuePair("location", "customer"));
+		params.add(new BasicNameValuePair("object_id", customerId.toString()));
+		return executeIndexEncapsulatedRequest(InventoryAmountItem.class, params);
+	}
+
+	/**
 	 * Looking for item inventory id by asset number
 	 *
 	 * @param inventoryId inventoryId
@@ -105,7 +125,8 @@ public class UserSideInventoryApi extends AbstractUserSideClient {
 		return executeEncapsulatedRequest(InventoryListItem.class, params);
 	}
 
-	public Integer addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial, String assetNumber) throws IOException, UserSideApiErrorException {
+	public Integer addInventory(int catalogId, int traderId, int amount, double cost, int storageId, String serial,
+	                            String assetNumber) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "inventory"));

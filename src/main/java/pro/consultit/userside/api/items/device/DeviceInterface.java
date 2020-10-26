@@ -13,7 +13,7 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceInterface {
 	@JsonProperty("ifIndex")
-	private Integer ifIndex;
+	private Long ifIndex;
 	@JsonProperty("ifType")
 	private Integer ifType;
 	@JsonProperty("ifName")
