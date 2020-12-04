@@ -87,19 +87,28 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 
 	}
 
+	public List<LocalityType> getLocalityTypeList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_locality_type"));
+		return executeIndexEncapsulatedRequest(LocalityType.class, params);
+
+	}
+
 	public List<HouseItem> getHouse(List<Integer> cityIdList, List<Integer> cityRegionIdList, List<Integer> streetIdList) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get_house"));
 		if (cityIdList != null && cityIdList.size() > 0) {
-			params.add(new BasicNameValuePair("city_id", String.join(",", cityIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+			params.add(new BasicNameValuePair("city_id", cityIdList.stream().map(Object::toString).collect(Collectors.joining(","))));
 		}
 		if (cityRegionIdList != null && cityRegionIdList.size() > 0) {
-			params.add(new BasicNameValuePair("area_id", String.join(",", cityRegionIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+			params.add(new BasicNameValuePair("area_id", cityRegionIdList.stream().map(Object::toString).collect(Collectors.joining(","))));
 		}
 		if (streetIdList != null && streetIdList.size() > 0) {
-			params.add(new BasicNameValuePair("street_id", String.join(",", streetIdList.stream().map(Object::toString).collect(Collectors.toList()))));
+			params.add(new BasicNameValuePair("street_id", streetIdList.stream().map(Object::toString).collect(Collectors.joining(","))));
 		}
 
 		return executeIndexEncapsulatedRequest(HouseItem.class, params);
@@ -119,9 +128,18 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
-		params.add(new BasicNameValuePair("action", "get_house"));
+		params.add(new BasicNameValuePair("action", "get"));
 		params.add(new BasicNameValuePair("id", String.valueOf(addressId)));
 		List<HouseItem> result = executeIndexEncapsulatedRequest(HouseItem.class, params);
 		return result.stream().findFirst().orElse(null);
+	}
+
+	public List<HouseItem> getAddress(List<Integer> addressList) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get"));
+		params.add(new BasicNameValuePair("id", addressList.stream().map(Object::toString).collect(Collectors.joining(","))));
+		return executeIndexEncapsulatedRequest(HouseItem.class, params);
 	}
 }

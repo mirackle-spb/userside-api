@@ -33,7 +33,7 @@ public class TaskItem {
 	@JsonProperty("address")
 	private TaskAddress address;
 	@JsonProperty("node")
-	private TaskNode node;
+	private TaskNode[] node;
 	@JsonProperty("description")
 	private String description;
 	@JsonProperty("authorId")
