@@ -36,6 +36,17 @@ public class UserSideAdditionalDataApi extends UserSideAddressApi {
 		params.add(new BasicNameValuePair("section", "switch"));
 
 		return executeIndexEncapsulatedRequest(AdditionalParam.class, params);
+	}
 
+	public void setAdditionalParameter(int categoryId, int fieldId, int objectId, String value) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "additional_data"));
+		params.add(new BasicNameValuePair("action", "change_value"));
+		params.add(new BasicNameValuePair("cat_id", Integer.toString(categoryId)));
+		params.add(new BasicNameValuePair("field_id", Integer.toString(fieldId)));
+		params.add(new BasicNameValuePair("object_id", Integer.toString(objectId)));
+		params.add(new BasicNameValuePair("value", value));
+		executeBooleanRequest(params);
 	}
 }

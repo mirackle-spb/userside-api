@@ -44,5 +44,8 @@ public class TaskItem {
 	private TaskStaff staff;
 	@JsonProperty("customerId")
 	private Integer customerId;
+	@JsonProperty("additional_fields")
+	private Map<String, String> additionalFields;
+
 
 }
