@@ -28,6 +28,15 @@ public class UserSideAdditionalDataApi extends UserSideAddressApi {
 		return executeIndexEncapsulatedRequest(AdditionalParam.class, params);
 	}
 
+	public List<AdditionalParam> getTaskAdditionalParameterList() throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "additional_data"));
+		params.add(new BasicNameValuePair("action", "get_list"));
+		params.add(new BasicNameValuePair("section", "17"));
+		return executeIndexEncapsulatedRequest(AdditionalParam.class, params);
+	}
+
 	public List<AdditionalParam> getDeviceAdditionalParameterList() throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
