@@ -77,8 +77,8 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 
 	public boolean editClient(@NotNull Integer clientId, String clientFullname,
 	                          String agreementNumber, Date agreementDate,
-	                          Integer apartmentNumber, String email,
-	                          Integer floor, Integer houseId, String login,
+	                          String apartmentNumber, String email,
+	                          String floor, Integer houseId, String login,
 	                          String phone0, String phone1, Boolean isPotential) throws IOException, UserSideApiErrorException {
 
 		List<NameValuePair> params = new ArrayList<>();
@@ -101,7 +101,7 @@ public class UserSideCustomerApi extends AbstractUserSideClient {
 			params.add(new BasicNameValuePair("house_id", String.valueOf(houseId)));
 		}
 		if (apartmentNumber != null) {
-			params.add(new BasicNameValuePair("apartment_number", String.valueOf(apartmentNumber)));
+			params.add(new BasicNameValuePair("apartment_number", apartmentNumber));
 		}
 		if (floor != null) {
 			params.add(new BasicNameValuePair("floor", String.valueOf(floor)));
