@@ -124,6 +124,16 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		return result.stream().findFirst().orElse(null);
 	}
 
+	public HouseItem getHouse(Integer houseId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "address"));
+		params.add(new BasicNameValuePair("action", "get_house"));
+		params.add(new BasicNameValuePair("id", String.valueOf(houseId)));
+		List<HouseItem> result = executeIndexEncapsulatedRequest(HouseItem.class, params);
+		return result.stream().findFirst().orElse(null);
+	}
+
 	public HouseItem getAddress(Integer addressId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
