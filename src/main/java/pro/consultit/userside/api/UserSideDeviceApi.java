@@ -5,6 +5,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import pro.consultit.userside.api.items.DeviceListItem;
 import pro.consultit.userside.api.items.OntDataItem;
+import pro.consultit.userside.api.items.device.DeviceFdbRecord;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -41,6 +42,15 @@ public class UserSideDeviceApi extends AbstractUserSideClient {
 		params.add(new BasicNameValuePair("is_online", "1"));
 		params.add(new BasicNameValuePair("is_hide_ifaces_data", "1"));
 		return executeIndexEncapsulatedRequest(DeviceListItem.class, params);
+	}
+
+	public List<DeviceFdbRecord> getDeviceFdb(Integer deviceId) throws IOException, UserSideApiErrorException {
+		List<NameValuePair> params = new ArrayList<>();
+		params.add(new BasicNameValuePair("key", key));
+		params.add(new BasicNameValuePair("cat", "device"));
+		params.add(new BasicNameValuePair("action", "read_fdb"));
+		params.add(new BasicNameValuePair("device_id", deviceId.toString()));
+		return executeArrayRequest(DeviceFdbRecord.class, params);
 	}
 
 	public OntDataItem getOntData(String lookupKey) throws IOException, UserSideApiErrorException {
