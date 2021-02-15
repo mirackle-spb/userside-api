@@ -23,5 +23,5 @@ public class CityDistrictItem {
 	@JsonProperty("parent_ids")
 	private List<Integer> parentIds;
 	@JsonProperty("locality_type_id")
-	private String localityType;
+	private Integer localityType;
 }

@@ -23,5 +23,5 @@ public class LocalityType {
 	@JsonProperty("order")
 	private Integer order;
 	@JsonProperty("locality_type_id")
-	private String localityType;
+	private Integer localityType;
 }

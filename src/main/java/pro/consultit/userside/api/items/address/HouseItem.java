@@ -44,5 +44,5 @@ public class HouseItem {
 	@JsonProperty("task_comment")
 	private String taskComment;
 	@JsonProperty("locality_type_id")
-	private String localityType;
+	private Integer localityType;
 }
