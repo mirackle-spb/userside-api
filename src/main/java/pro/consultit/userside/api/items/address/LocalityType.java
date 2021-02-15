@@ -22,4 +22,6 @@ public class LocalityType {
 	private String prefix;
 	@JsonProperty("order")
 	private Integer order;
+	@JsonProperty("locality_type_id")
+	private String localityType;
 }

@@ -43,4 +43,6 @@ public class HouseItem {
 	private String exitComment;
 	@JsonProperty("task_comment")
 	private String taskComment;
+	@JsonProperty("locality_type_id")
+	private String localityType;
 }

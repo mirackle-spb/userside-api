@@ -22,4 +22,6 @@ public class CityDistrictItem {
 	private Integer parentId;
 	@JsonProperty("parent_ids")
 	private List<Integer> parentIds;
+	@JsonProperty("locality_type_id")
+	private String localityType;
 }
