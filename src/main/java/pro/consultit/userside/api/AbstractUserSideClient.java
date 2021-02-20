@@ -9,7 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import pro.consultit.userside.api.response.*;
@@ -26,14 +26,13 @@ public abstract class AbstractUserSideClient {
 	protected String url;
 	protected String key;
 	protected ObjectMapper objectMapper;
-	protected final HttpClient httpclient;
+	protected HttpClient httpclient = new DefaultHttpClient();
 	protected int timeout = 5;
 
 	public AbstractUserSideClient(ObjectMapper objectMapper, String url, String key) {
 		this.objectMapper = objectMapper;
 		this.url = url;
 		this.key = key;
-		this.httpclient = HttpClientBuilder.create().build();
 		setHttpClientTimeout(httpclient);
 	}
 
@@ -42,7 +41,6 @@ public abstract class AbstractUserSideClient {
 		this.url = url;
 		this.key = key;
 		this.timeout = timeout;
-		this.httpclient = HttpClientBuilder.create().build();
 		setHttpClientTimeout(httpclient);
 	}
 
