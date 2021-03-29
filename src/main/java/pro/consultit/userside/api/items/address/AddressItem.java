@@ -22,6 +22,8 @@ public class AddressItem {
 	private List<Integer> parentIds;
 	@JsonProperty("building_id")
 	private Integer buildingId;
+	@JsonProperty("name")
+	private String name;
 	@JsonProperty("full_name")
 	private String fullName;
 	@JsonProperty("additional_data")
