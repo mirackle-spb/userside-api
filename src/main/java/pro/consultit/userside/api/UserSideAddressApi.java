@@ -134,13 +134,13 @@ public class UserSideAddressApi extends AbstractUserSideClient {
 		return result.stream().findFirst().orElse(null);
 	}
 
-	public HouseItem getAddress(Integer addressId) throws IOException, UserSideApiErrorException {
+	public AddressItem getAddress(Integer addressId) throws IOException, UserSideApiErrorException {
 		List<NameValuePair> params = new ArrayList<>();
 		params.add(new BasicNameValuePair("key", key));
 		params.add(new BasicNameValuePair("cat", "address"));
 		params.add(new BasicNameValuePair("action", "get"));
 		params.add(new BasicNameValuePair("id", String.valueOf(addressId)));
-		List<HouseItem> result = executeIndexEncapsulatedRequest(HouseItem.class, params);
+		List<AddressItem> result = executeIndexEncapsulatedRequest(AddressItem.class, params);
 		return result.stream().findFirst().orElse(null);
 	}
 
