@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class ListResponseConverter extends StdConverter<String, List<Integer>> {
 	@Override
 	public List<Integer> convert(final String string) {
-		var processString = string.trim();
+		String processString = string.trim();
 		if (processString.length() > 0) {
 			if (processString.contains(",")) {
 				return Stream.of(processString.split(",")).map(String::trim)
